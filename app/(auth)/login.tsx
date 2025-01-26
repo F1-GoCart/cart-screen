@@ -29,9 +29,9 @@ export default function LoginScreen() {
   return (
     <View className="items-center justify-between pt-32">
       <Text onPress={startSession}>Put logo here!</Text>
-      <Card className="bg-go_cart_green h-full max-h-[75%] w-full items-center justify-around rounded-t-[40px] pb-4 pt-4">
+      <Card className="w-full h-full max-h-[75%] items-center justify-around rounded-t-[40px] bg-go_cart_green pt-4 pb-4">
         <CardHeader>
-          <CardTitle className="text-3xl font-extrabold tracking-[1px] text-white">
+          <CardTitle className="text-white font-extrabold tracking-[1px] text-3xl">
             ACTIVATE CARD WITH QR CODE
           </CardTitle>
         </CardHeader>
@@ -44,9 +44,9 @@ export default function LoginScreen() {
           />
         </CardContent>
         <CardFooter className="max-w-lg">
-          <Text className="text-center text-3xl font-light text-white">
+          <Text className="text-white text-3xl text-center font-light">
             Scan this with the{" "}
-            <Text className="text-3xl font-extrabold text-white">
+            <Text className="font-extrabold text-white text-3xl">
               Go Cart Mobile Application
             </Text>{" "}
             to activate!

@@ -21,7 +21,7 @@ export default function AppLayout() {
           const data = payload.new as ShoppingCart;
 
           setStatus(data.status);
-        },
+        }
       )
       .subscribe();
 
