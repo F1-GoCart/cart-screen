@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import Item from "./item";
-import type { CartItems } from "./item-List";
+import type { CartItems } from "./item-list";
 
 type Props = {
   itemList: CartItems[];
