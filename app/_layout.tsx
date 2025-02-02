@@ -53,13 +53,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          animation: "fade_from_bottom",
-        }}
-      />
+      <Stack>
+        <Stack.Screen
+          name="index"
+          options={{
+            title: "Starter Screen",
+            headerShown: false,
+          }}
+        />
+      </Stack>
       <PortalHost />
     </ThemeProvider>
   );

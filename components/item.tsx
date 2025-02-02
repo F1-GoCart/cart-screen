@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import type { CartItems } from "./item-List";
+import type { CartItems } from "./item-list";
 
 type Props = {
   index: number;
