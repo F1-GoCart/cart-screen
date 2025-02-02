@@ -14,6 +14,7 @@ import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { useLayoutEffect, useRef, useState } from "react";
+import { Appearance } from "react-native";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -28,6 +29,8 @@ export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
+
+Appearance.setColorScheme("light"); // Default to light theme
 
 export default function RootLayout() {
   const hasMounted = useRef(false);
