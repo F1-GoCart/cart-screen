@@ -4,6 +4,7 @@
     "slug": "f1-gocart-screen",
     "version": "1.0.0",
     "orientation": "landscape",
+    "orientation": "landscape",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "light",
@@ -12,6 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": ["**/*"],
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
