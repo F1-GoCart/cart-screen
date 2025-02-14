@@ -58,5 +58,10 @@
     "supabase": "^2.9.6",
     "typescript": "^5.3.3"
   },
-  "private": true
+  "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "supabase"
+    ]
+  }
 }
