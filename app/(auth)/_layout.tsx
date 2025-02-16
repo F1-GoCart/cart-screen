@@ -21,7 +21,7 @@ export default function AuthLayout() {
           const data = payload.new as ShoppingCart;
 
           setStatus(data.status);
-        }
+        },
       )
       .subscribe();
 

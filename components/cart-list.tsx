@@ -2,22 +2,45 @@ import React from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import Item from "./item";
 import type { CartItems } from "./item-list";
+import { Database } from "~/lib/database.types";
 
-type Props = {
-  itemList: CartItems[];
+type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
+  product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };
 
-export default function List({ itemList }: Props) {
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={itemList}
-        renderItem={({ item, index }) => <Item item={item} index={index} />}
-        keyExtractor={(item) => item.itemName}
-        showsVerticalScrollIndicator={true}
-      />
-    </View>
-  );
+type Props = {
+  itemList?: CartItems[];
+  scannedItems?: ScannedItem[];
+};
+
+export default function List({ itemList, scannedItems }: Props) {
+  if (itemList) {
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={itemList}
+          renderItem={({ item, index }) => <Item item={item} index={index} />}
+          keyExtractor={(item) => item.itemName}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    );
+  }
+
+  if (scannedItems) {
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={scannedItems}
+          renderItem={({ item, index }) => (
+            <Item scannedItem={item} index={index} />
+          )}
+          keyExtractor={(item) => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
