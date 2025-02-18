@@ -55,7 +55,8 @@ export default function Item({ item, scannedItem }: Props) {
           <Text style={styles.itemQuantity}>qtty here</Text>
         </View>
         <Text style={styles.itemPrice}>
-          ₱{scannedItem.product_details.price}
+          {/* ₱{scannedItem.product_details.price} */}₱
+          {scannedItem.product_details.price?.toFixed(2) ?? "0.00"}
         </Text>
       </View>
     );

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { View, Text } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import { View, Text, Image } from "react-native";
+import Svg, { ClipPath, Defs, G, Path, Rect } from "react-native-svg";
 import { SafeAreaView, StyleSheet } from "react-native";
 import List from "../../components/cart-list";
 import SuggestedItemList from "../../components/carousel-suggested-list";
@@ -14,6 +14,7 @@ import { supabase } from "~/lib/supabase";
 import { useEffect, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
+import { Car } from "lucide-react-native";
 
 // const getTotalItems = (items: CartItems[]) => {
 //   return items.reduce((total, item) => total + item.itemQuantity, 0);
@@ -30,7 +31,7 @@ type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };
 
-export default function Index() {
+export default function Checkout() {
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(0);
@@ -112,7 +113,7 @@ export default function Index() {
 
   return (
     <View className="flex-1 pb-10 pl-5 pr-5 pt-10">
-      <View className="mb-2 max-h-20">
+      <View className="mb-2 max-h-20 flex-row">
         <Svg width="405" height="188" fill="none">
           <Path
             d="M123.788 27.336C117.684 27.336 113.484 23.052 113.484 17.256V17.2C113.484 11.628 117.824 7.064 123.76 7.064C127.288 7.064 129.416 8.016 131.46 9.752L128.744 13.028C127.232 11.768 125.888 11.04 123.62 11.04C120.484 11.04 117.992 13.812 117.992 17.144V17.2C117.992 20.784 120.456 23.416 123.928 23.416C125.496 23.416 126.896 23.024 127.988 22.24V19.44H123.648V15.716H132.16V24.228C130.144 25.936 127.372 27.336 123.788 27.336ZM145.829 27.336C139.781 27.336 135.441 22.828 135.441 17.256V17.2C135.441 11.628 139.837 7.064 145.885 7.064C151.933 7.064 156.273 11.572 156.273 17.144V17.2C156.273 22.772 151.877 27.336 145.829 27.336ZM145.885 23.36C149.357 23.36 151.765 20.616 151.765 17.256V17.2C151.765 13.84 149.301 11.04 145.829 11.04C142.357 11.04 139.949 13.784 139.949 17.144V17.2C139.949 20.56 142.413 23.36 145.885 23.36ZM177.677 27.336C171.909 27.336 167.625 22.884 167.625 17.256V17.2C167.625 11.628 171.825 7.064 177.845 7.064C181.541 7.064 183.753 8.296 185.573 10.088L182.829 13.252C181.317 11.88 179.777 11.04 177.817 11.04C174.513 11.04 172.133 13.784 172.133 17.144V17.2C172.133 20.56 174.457 23.36 177.817 23.36C180.057 23.36 181.429 22.464 182.969 21.064L185.713 23.836C183.697 25.992 181.457 27.336 177.677 27.336ZM187.485 27L195.885 7.26H199.861L208.261 27H203.753L201.961 22.604H193.673L191.881 27H187.485ZM195.213 18.796H200.421L197.817 12.44L195.213 18.796ZM211.286 27V7.4H220.246C222.738 7.4 224.67 8.1 225.958 9.388C227.05 10.48 227.638 12.02 227.638 13.868V13.924C227.638 17.088 225.93 19.076 223.438 20L228.226 27H223.186L218.986 20.728H215.598V27H211.286ZM215.598 16.92H219.966C222.066 16.92 223.27 15.8 223.27 14.148V14.092C223.27 12.244 221.982 11.292 219.882 11.292H215.598V16.92ZM236.084 27V11.376H230.12V7.4H246.36V11.376H240.396V27H236.084Z"
@@ -134,57 +135,27 @@ export default function Index() {
             stroke-linejoin="round"
           />
         </Svg>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "flex-end",
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: 700,
+              color: "#0FA958",
+              fontSize: 46,
+            }}
+          >
+            CART PAYMENT
+          </Text>
+        </View>
       </View>
-      <View className="flex flex-1 flex-row items-center justify-between gap-2">
-        <Card className="mt-5 flex h-full w-full max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-14">
-          <Card className="mt-5 h-full w-full rounded-3xl border-0 bg-[#E6E6E6]">
-            <SafeAreaView style={styles.container}>
-              <List scannedItems={scannedItems} />
-            </SafeAreaView>
-          </Card>
-          <View className="flex-row">
-            <Button
-              variant="default"
-              size="icon"
-              style={{
-                backgroundColor: "#0FA958",
-                marginTop: 14,
-                marginRight: 15,
-                marginBottom: 15,
-                width: 340,
-                borderRadius: 32,
-                height: 50,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={() => router.push("/checkout")}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Svg width="33" height="23" viewBox="0 0 23 13" fill="none">
-                  <Path
-                    d="M6.27508 5.22028L7.18078 4.31265L6.16187 3.27535H8.86278V1.97874H6.16187L7.19695 0.941445L6.27508 0.0338135L3.68739 2.62705L6.27508 5.22028ZM9.5097 13C9.86551 13 10.17 12.8731 10.4232 12.6194C10.6763 12.3657 10.8031 12.0604 10.8035 11.7034C10.804 11.3464 10.6772 11.0412 10.4232 10.7879C10.1691 10.5347 9.86464 10.4076 9.5097 10.4067C9.15475 10.4059 8.85005 10.5329 8.5956 10.7879C8.34114 11.043 8.21456 11.3481 8.21585 11.7034C8.21715 12.0586 8.34373 12.364 8.5956 12.6194C8.84747 12.8749 9.15217 13.0017 9.5097 13ZM3.04047 13C3.39628 13 3.70076 12.8731 3.95393 12.6194C4.20709 12.3657 4.33389 12.0604 4.33432 11.7034C4.33475 11.3464 4.20795 11.0412 3.95393 10.7879C3.6999 10.5347 3.39542 10.4076 3.04047 10.4067C2.68553 10.4059 2.38083 10.5329 2.12637 10.7879C1.87191 11.043 1.74533 11.3481 1.74662 11.7034C1.74792 12.0586 1.8745 12.364 2.12637 12.6194C2.37824 12.8749 2.68294 13.0017 3.04047 13ZM13.3912 1.33043V0.0338135H11.2726L8.52314 5.86859H3.99468L1.47168 1.33043H-6.67572e-05L3.21837 7.1652H8.79808L9.5097 8.46182H1.74662V9.75844H11.6931L9.76847 6.25757L12.0974 1.33043H13.3912Z"
-                    fill="white"
-                  />
-                  <Path
-                    d="M11.9565 6.03878H16.5797M12.7005 8.11124H20.1933M14.401 0.671631H19.8744M13.0725 2.58467H22"
-                    stroke="white"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </Svg>
-                <Text
-                  style={{
-                    fontWeight: 700,
-                    marginLeft: 10,
-                    color: "white",
-                    fontSize: 16,
-                  }}
-                >
-                  CHECK OUT
-                </Text>
-              </View>
-            </Button>
+
+      <View className="flex-row gap-28">
+        <Card className="mt-5 flex h-24 w-96 max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4]">
+          <View className="flex-row items-center">
             <View className="flex-col p-3">
               <Text
                 style={{
@@ -222,33 +193,170 @@ export default function Index() {
             </View>
           </View>
         </Card>
-
-        <Card className="mt-5 flex h-full w-full max-w-sm items-center justify-center gap-3 rounded-3xl border-0 bg-[#E1FFEF] p-5">
-          <Card
-            className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#F6FFFB]"
-            style={{ padding: 15 }}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+          }}
+        >
+          <Button
+            variant="default"
+            size="icon"
+            style={{
+              backgroundColor: "#EE4E4E",
+              marginTop: 20,
+              width: 176,
+              borderRadius: 32,
+              height: 45,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => router.back()}
           >
-            <Text style={{ fontWeight: 600, color: "#005F42" }}>
-              ITEMS YOU MIGHT CONSIDER BUYING
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                style={{
+                  fontWeight: 700,
+                  color: "white",
+                  fontSize: 16,
+                }}
+              >
+                CANCEL
+              </Text>
+            </View>
+          </Button>
+        </View>
+      </View>
 
+      <View className="flex flex-1 flex-row justify-between gap-2">
+        <Card className="mt-5 flex h-full w-full max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-11">
+          <Card className="mt-7 h-full w-full rounded-3xl border-0 bg-[#E6E6E6]">
             <SafeAreaView style={styles.container}>
-              <SuggestedItemList suggestedItemList={suggestedItems} />
+              <List scannedItems={scannedItems} />
             </SafeAreaView>
           </Card>
-          <Card
-            className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#F6FFFB]"
-            style={{ padding: 15 }}
-          >
-            <Text style={{ fontWeight: 600, color: "#FF0000" }}>
-              SAVE UP!!!
-            </Text>
-
-            <SafeAreaView style={styles.container}>
-              <SaveUpItemList saveUpItemList={saveUpItems} />
-            </SafeAreaView>
-          </Card>
+          <View className="flex-row items-center">
+            <View className="flex-col pb-7 pl-5 pt-7">
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: "#777777",
+                  fontFamily: "gotham-rounded-bold",
+                }}
+              >
+                Earned Points: 9.06
+              </Text>
+            </View>
+          </View>
         </Card>
+        <View className="ml-4 flex-col gap-3">
+          <Card className="mt-5 flex h-32 w-full max-w-sm gap-3 rounded-3xl border-0 bg-[#F4F4F4] p-5">
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                style={{
+                  fontWeight: 700,
+                  marginLeft: 10,
+                  color: "black",
+                  fontSize: 18,
+                }}
+              >
+                Current Points:{" "}
+              </Text>
+              <Text
+                style={{
+                  fontWeight: 400,
+                  marginLeft: 5,
+                  color: "black",
+                  fontSize: 18,
+                }}
+              >
+                9.06
+              </Text>
+            </View>
+          </Card>
+          <Card className="mt-1 flex h-4/6 w-full max-w-sm items-center justify-center gap-3 rounded-3xl border-0 bg-[#E1FFEF] p-5">
+            <Text
+              style={{
+                fontWeight: 700,
+                marginLeft: 10,
+                color: "black",
+                fontSize: 18,
+              }}
+            >
+              Secure Payment via PayMongo
+            </Text>
+
+            <Image
+              source={require("../../assets/images/payment_methods.png")}
+              style={{
+                width: "80%",
+                height: 50,
+                resizeMode: "contain",
+              }}
+            />
+
+            <Svg width="178" height="178" viewBox="0 0 128 128" fill="none">
+              <G ClipPath="url(#clip0_266_1170)">
+                <Path
+                  d="M117.333 12.4446H26.6667C23.8377 12.4446 19.7782 12.6664 17.7778 14.6668C15.7774 16.6672 16 20.2823 16 23.1112V44.4446H22.2222V17.3335H122.222L122.667 103.111H22.2222V76.4446H16V97.7779C16 100.607 15.7774 104.666 17.7778 106.667C19.7782 108.667 23.8377 108.445 26.6667 108.445H117.333C120.162 108.445 124.222 108.667 126.222 106.667C128.223 104.666 128 100.607 128 97.7779V23.1112C128 20.2823 128.223 16.6672 126.222 14.6668C124.222 12.6664 120.162 12.4446 117.333 12.4446ZM37.3333 76.4446V62.2356H0V55.1112H37.3333V44.4446L58.6667 60.4446L37.3333 76.4446ZM106.667 61.3467H69.3333V55.1112H106.667V61.3467ZM106.667 40.0001H69.3333V33.7779H106.667V40.0001ZM90.6667 81.7912H69.3333V76.4446H90.6667V81.7912Z"
+                  fill="#A1B5AA"
+                />
+              </G>
+              <Defs>
+                <ClipPath id="clip0_266_1170">
+                  <Rect width="128" height="128" fill="white" />
+                </ClipPath>
+              </Defs>
+            </Svg>
+
+            <Text
+              style={{
+                fontWeight: 400,
+                marginLeft: 15,
+                marginRight: 15,
+                color: "black",
+                fontSize: 11,
+                textAlign: "center",
+              }}
+            >
+              After clicking “Pay Now”, you will be redirected to Secure
+              Payments via PayMongo to complete your purchase securely.
+            </Text>
+          </Card>
+          <Button
+            variant="default"
+            size="icon"
+            style={{
+              backgroundColor: "#0FA958",
+              marginTop: 5,
+              marginRight: 15,
+              marginBottom: 15,
+              width: 340,
+              borderRadius: 32,
+              height: 50,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => router.push("/checkout")}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                style={{
+                  fontWeight: 700,
+                  marginLeft: 10,
+                  color: "white",
+                  fontSize: 18,
+                }}
+              >
+                PAY NOW
+              </Text>
+            </View>
+          </Button>
+        </View>
       </View>
     </View>
   );
