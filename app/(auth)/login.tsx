@@ -10,13 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { cart_id } from "~/lib/constants";
 
 export default function LoginScreen() {
   const startSession = async () => {
     const { error } = await supabase
       .from("shopping_carts")
       .update({ status: "in_use" })
-      .eq("cart_id", "go-cart-01");
+      .eq("cart_id", cart_id);
 
     if (error) {
       console.error("Error updating status: ", error.message);
@@ -37,7 +38,7 @@ export default function LoginScreen() {
             size={300}
             color="white"
             backgroundColor="#0FA958"
-            value="go-cart-01"
+            value={cart_id}
           />
         </CardContent>
         <CardFooter className="max-w-lg">

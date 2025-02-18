@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { supabase } from "~/lib/supabase";
-import useStatusStore from "~/lib/statusStore";
+import useStatusStore from "~/stores/StatusStore";
 import { ShoppingCart } from "~/lib/interfaces";
 import { Href, Redirect, Slot } from "expo-router";
+import { cart_id } from "~/lib/constants";
 
 export default function AppLayout() {
   const status = useStatusStore((state) => state.status);
@@ -13,7 +14,7 @@ export default function AppLayout() {
       const { data, error } = await supabase
         .from("shopping_carts")
         .select("status")
-        .eq("cart_id", "go-cart-01")
+        .eq("cart_id", cart_id)
         .single();
 
       if (error) {
