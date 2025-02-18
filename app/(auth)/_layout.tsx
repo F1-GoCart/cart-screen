@@ -1,4 +1,4 @@
-import useStatusStore from "~/lib/statusStore";
+import useStatusStore from "~/stores/StatusStore";
 import { Href, Redirect, Slot } from "expo-router";
 import { useEffect } from "react";
 import { supabase } from "~/lib/supabase";
@@ -21,7 +21,7 @@ export default function AuthLayout() {
           const data = payload.new as ShoppingCart;
 
           setStatus(data.status);
-        }
+        },
       )
       .subscribe();
 

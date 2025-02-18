@@ -9,6 +9,128 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      product_details: {
+        Row: {
+          aisle: string | null
+          category: string | null
+          created_at: string
+          id: number
+          image: string | null
+          is_sale: boolean | null
+          name: string | null
+          price: number | null
+          promo_price: number | null
+          size: string | null
+          stock: number | null
+        }
+        Insert: {
+          aisle?: string | null
+          category?: string | null
+          created_at?: string
+          id?: number
+          image?: string | null
+          is_sale?: boolean | null
+          name?: string | null
+          price?: number | null
+          promo_price?: number | null
+          size?: string | null
+          stock?: number | null
+        }
+        Update: {
+          aisle?: string | null
+          category?: string | null
+          created_at?: string
+          id?: number
+          image?: string | null
+          is_sale?: boolean | null
+          name?: string | null
+          price?: number | null
+          promo_price?: number | null
+          size?: string | null
+          stock?: number | null
+        }
+        Relationships: []
+      }
+      purchase_history: {
+        Row: {
+          billing: Json | null
+          cart_id: number | null
+          change: number | null
+          created_at: string
+          datetime: string | null
+          id: string
+          mode_of_payment: string | null
+          purchased_items: Json | null
+          total_price: number | null
+          user_id: string | null
+        }
+        Insert: {
+          billing?: Json | null
+          cart_id?: number | null
+          change?: number | null
+          created_at?: string
+          datetime?: string | null
+          id: string
+          mode_of_payment?: string | null
+          purchased_items?: Json | null
+          total_price?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          billing?: Json | null
+          cart_id?: number | null
+          change?: number | null
+          created_at?: string
+          datetime?: string | null
+          id?: string
+          mode_of_payment?: string | null
+          purchased_items?: Json | null
+          total_price?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_history_cart_id_fkey"
+            columns: ["cart_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_carts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scanned_items: {
+        Row: {
+          id: number
+          item_id: number | null
+          status: boolean | null
+        }
+        Insert: {
+          id?: number
+          item_id?: number | null
+          status?: boolean | null
+        }
+        Update: {
+          id?: number
+          item_id?: number | null
+          status?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scanned_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "product_details"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shopping_carts: {
         Row: {
           cart_id: string | null
@@ -26,6 +148,45 @@ export type Database = {
           status?: string | null
         }
         Relationships: []
+      }
+      shopping_list: {
+        Row: {
+          created_at: string
+          id: number
+          is_deleted: boolean | null
+          item_id: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          is_deleted?: boolean | null
+          item_id?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          is_deleted?: boolean | null
+          item_id?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shopping_list_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "product_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shopping_list_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
