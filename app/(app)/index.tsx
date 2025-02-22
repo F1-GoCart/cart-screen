@@ -139,7 +139,7 @@ export default function Index() {
         <Card className="mt-5 flex h-full w-full max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-14">
           <Card className="mt-5 h-full w-full rounded-3xl border-0 bg-[#E6E6E6]">
             <SafeAreaView style={styles.container}>
-              <List scannedItems={scannedItems} />
+              <List scannedItems={scannedItems} showImage={true} />
             </SafeAreaView>
           </Card>
           <View className="flex-row">

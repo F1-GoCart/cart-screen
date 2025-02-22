@@ -11,15 +11,22 @@ type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
 type Props = {
   itemList?: CartItems[];
   scannedItems?: ScannedItem[];
+  showImage?: boolean;
 };
 
-export default function List({ itemList, scannedItems }: Props) {
+export default function List({
+  itemList,
+  scannedItems,
+  showImage = false,
+}: Props) {
   if (itemList) {
     return (
       <View style={styles.container}>
         <FlatList
           data={itemList}
-          renderItem={({ item, index }) => <Item item={item} index={index} />}
+          renderItem={({ item, index }) => (
+            <Item item={item} index={index} showImage={showImage} />
+          )}
           keyExtractor={(item) => item.itemName}
           showsVerticalScrollIndicator={false}
         />
@@ -33,7 +40,7 @@ export default function List({ itemList, scannedItems }: Props) {
         <FlatList
           data={scannedItems}
           renderItem={({ item, index }) => (
-            <Item scannedItem={item} index={index} />
+            <Item scannedItem={item} index={index} showImage={showImage} />
           )}
           keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}

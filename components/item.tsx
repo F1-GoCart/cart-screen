@@ -11,13 +11,16 @@ type Props = {
   index: number;
   item?: CartItems;
   scannedItem?: ScannedItem;
+  showImage: boolean;
 };
 
-export default function Item({ item, scannedItem }: Props) {
+export default function Item({ item, scannedItem, showImage }: Props) {
   if (item) {
     return (
       <View style={styles.itemContainer}>
-        <Image source={item.image} style={styles.image} resizeMode="cover" />
+        {showImage && (
+          <Image source={item.image} style={styles.image} resizeMode="cover" />
+        )}
         <View style={styles.detailsContainer}>
           <Text style={styles.itemName}>
             {item.itemName} {item.itemSize}
@@ -32,21 +35,22 @@ export default function Item({ item, scannedItem }: Props) {
   if (scannedItem) {
     return (
       <View style={styles.itemContainer}>
-        {scannedItem.product_details?.image ? (
-          <Image
-            source={{ uri: scannedItem.product_details.image }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        ) : (
-          <Image
-            source={{
-              uri: "https://via.placeholder.com/150/000000/FFFFFF/?text=No+Image",
-            }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        )}
+        {showImage &&
+          (scannedItem.product_details?.image ? (
+            <Image
+              source={{ uri: scannedItem.product_details.image }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          ) : (
+            <Image
+              source={{
+                uri: "https://via.placeholder.com/150/000000/FFFFFF/?text=No+Image",
+              }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          ))}
         <View style={styles.detailsContainer}>
           <Text style={styles.itemName}>
             {scannedItem.product_details.name}{" "}
