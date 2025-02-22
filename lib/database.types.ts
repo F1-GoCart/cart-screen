@@ -15,10 +15,10 @@ export type Database = {
           category: string | null
           created_at: string
           id: number
-          image: string | null
+          image: string
           is_sale: boolean | null
           name: string | null
-          price: number | null
+          price: number
           promo_price: number | null
           size: string | null
           stock: number | null
@@ -28,10 +28,10 @@ export type Database = {
           category?: string | null
           created_at?: string
           id?: number
-          image?: string | null
+          image: string
           is_sale?: boolean | null
           name?: string | null
-          price?: number | null
+          price: number
           promo_price?: number | null
           size?: string | null
           stock?: number | null
@@ -41,10 +41,10 @@ export type Database = {
           category?: string | null
           created_at?: string
           id?: number
-          image?: string | null
+          image?: string
           is_sale?: boolean | null
           name?: string | null
-          price?: number | null
+          price?: number
           promo_price?: number | null
           size?: string | null
           stock?: number | null
@@ -55,36 +55,33 @@ export type Database = {
         Row: {
           billing: Json | null
           cart_id: number | null
-          change: number | null
+          change: number
           created_at: string
-          datetime: string | null
+          datetime: string
           id: string
           mode_of_payment: string | null
-          purchased_items: Json | null
           total_price: number | null
           user_id: string | null
         }
         Insert: {
           billing?: Json | null
           cart_id?: number | null
-          change?: number | null
+          change?: number
           created_at?: string
-          datetime?: string | null
-          id: string
+          datetime: string
+          id?: string
           mode_of_payment?: string | null
-          purchased_items?: Json | null
           total_price?: number | null
           user_id?: string | null
         }
         Update: {
           billing?: Json | null
           cart_id?: number | null
-          change?: number | null
+          change?: number
           created_at?: string
-          datetime?: string | null
+          datetime?: string
           id?: string
           mode_of_payment?: string | null
-          purchased_items?: Json | null
           total_price?: number | null
           user_id?: string | null
         }
@@ -105,23 +102,66 @@ export type Database = {
           },
         ]
       }
+      purchased_items: {
+        Row: {
+          id: string
+          item_id: number
+          quantity: number
+        }
+        Insert: {
+          id: string
+          item_id: number
+          quantity: number
+        }
+        Update: {
+          id?: string
+          item_id?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchased_items_id_fkey"
+            columns: ["id"]
+            isOneToOne: false
+            referencedRelation: "purchase_history"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchased_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "product_details"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scanned_items: {
         Row: {
-          id: number
-          item_id: number | null
+          cart_id: number
+          item_id: number
+          scanned_date: string
           status: boolean | null
         }
         Insert: {
-          id?: number
-          item_id?: number | null
+          cart_id: number
+          item_id: number
+          scanned_date: string
           status?: boolean | null
         }
         Update: {
-          id?: number
-          item_id?: number | null
+          cart_id?: number
+          item_id?: number
+          scanned_date?: string
           status?: boolean | null
         }
         Relationships: [
+          {
+            foreignKeyName: "scanned_items_cart_id_fkey"
+            columns: ["cart_id"]
+            isOneToOne: false
+            referencedRelation: "shopping_carts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "scanned_items_item_id_fkey"
             columns: ["item_id"]
@@ -133,19 +173,19 @@ export type Database = {
       }
       shopping_carts: {
         Row: {
-          cart_id: string | null
+          cart_id: string
           id: number
-          status: string | null
+          status: string
         }
         Insert: {
-          cart_id?: string | null
+          cart_id?: string
           id?: number
-          status?: string | null
+          status: string
         }
         Update: {
-          cart_id?: string | null
+          cart_id?: string
           id?: number
-          status?: string | null
+          status?: string
         }
         Relationships: []
       }
