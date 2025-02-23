@@ -15,6 +15,8 @@ import { useEffect, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
 import { Car } from "lucide-react-native";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
 
 // const getTotalItems = (items: CartItems[]) => {
 //   return items.reduce((total, item) => total + item.itemQuantity, 0);
@@ -111,6 +113,16 @@ export default function Checkout() {
     setTotalAmount(total);
   }, [scannedItems]);
 
+  const [fontsLoaded] = useFonts({
+    GothamBook: require("../../assets/fonts/gotham-book.otf"),
+    GothamBold: require("../../assets/fonts/gotham-bold.ttf"),
+    GothamMedium: require("../../assets/fonts/gotham-medium.otf"),
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
   return (
     <View className="flex-1 pb-10 pl-5 pr-5 pt-10">
       <View className="mb-2 max-h-20 flex-row">
@@ -146,6 +158,7 @@ export default function Checkout() {
               fontWeight: 700,
               color: "#0FA958",
               fontSize: 46,
+              fontFamily: "GothamBold",
             }}
           >
             CART PAYMENT
@@ -163,7 +176,7 @@ export default function Checkout() {
                   fontWeight: 700,
                   color: "#777777",
                   marginLeft: 10,
-                  fontFamily: "gotham-rounded-bold",
+                  fontFamily: "GothamMedium",
                   marginBottom: 5,
                 }}
               >
@@ -173,7 +186,7 @@ export default function Checkout() {
                 style={{
                   fontSize: 28,
                   color: "black",
-                  fontFamily: "gotham-rounded-light",
+                  fontFamily: "GothamBook",
                   marginLeft: 10,
                 }}
               >
@@ -182,7 +195,7 @@ export default function Checkout() {
                   style={{
                     fontSize: 28,
                     color: "#0FA958",
-                    fontFamily: "gotham-rounded-light",
+                    fontFamily: "GothamBold",
                     marginLeft: 10,
                     fontWeight: "700",
                   }}
@@ -220,6 +233,7 @@ export default function Checkout() {
                 style={{
                   fontWeight: 700,
                   color: "white",
+                  fontFamily: "GothamBold",
                   fontSize: 16,
                 }}
               >
@@ -244,7 +258,7 @@ export default function Checkout() {
                   fontSize: 13,
                   fontWeight: 700,
                   color: "#777777",
-                  fontFamily: "gotham-rounded-bold",
+                  fontFamily: "GothamMedium",
                 }}
               >
                 Earned Points: 9.06
@@ -261,6 +275,7 @@ export default function Checkout() {
                   marginLeft: 10,
                   color: "black",
                   fontSize: 18,
+                  fontFamily: "GothamMedium",
                 }}
               >
                 Current Points:{" "}
@@ -271,6 +286,7 @@ export default function Checkout() {
                   marginLeft: 5,
                   color: "black",
                   fontSize: 18,
+                  fontFamily: "GothamBook",
                 }}
               >
                 9.06
@@ -284,6 +300,7 @@ export default function Checkout() {
                 marginLeft: 10,
                 color: "black",
                 fontSize: 18,
+                fontFamily: "GothamMedium",
               }}
             >
               Secure Payment via PayMongo
@@ -320,6 +337,7 @@ export default function Checkout() {
                 color: "black",
                 fontSize: 11,
                 textAlign: "center",
+                fontFamily: "GothamBook",
               }}
             >
               After clicking “Pay Now”, you will be redirected to Secure
@@ -341,7 +359,7 @@ export default function Checkout() {
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={() => router.push("/checkout")}
+            onPress={() => router.push("/payment-success")}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text
@@ -349,6 +367,7 @@ export default function Checkout() {
                   fontWeight: 700,
                   marginLeft: 10,
                   color: "white",
+                  fontFamily: "GothamBold",
                   fontSize: 18,
                 }}
               >

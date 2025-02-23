@@ -28,6 +28,16 @@
           "resizeMode": "contain",
           "backgroundColor": "#0fa958"
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/gotham-bold.ttf",
+            "./assets/fonts/gotham-medium.otf",
+            "./assets/fonts/gotham-book.otf"
+          ]
+        }
       ]
     ],
     "experiments": {
