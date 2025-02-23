@@ -179,6 +179,7 @@ export default function Index() {
                     marginLeft: 10,
                     color: "white",
                     fontSize: 16,
+                    fontFamily: "GothamBold",
                   }}
                 >
                   CHECK OUT
@@ -194,6 +195,7 @@ export default function Index() {
                   marginLeft: 10,
                   fontFamily: "gotham-rounded-bold",
                   marginBottom: 5,
+                  fontFamily: "GothamMedium",
                 }}
               >
                 Items: {totalItems}
@@ -202,8 +204,8 @@ export default function Index() {
                 style={{
                   fontSize: 28,
                   color: "black",
-                  fontFamily: "gotham-rounded-light",
                   marginLeft: 10,
+                  fontFamily: "GothamBook",
                 }}
               >
                 TOTAL: {""}
@@ -211,9 +213,9 @@ export default function Index() {
                   style={{
                     fontSize: 28,
                     color: "#0FA958",
-                    fontFamily: "gotham-rounded-light",
                     marginLeft: 10,
                     fontWeight: "700",
+                    fontFamily: "GothamBold",
                   }}
                 >
                   {totalAmount.toFixed(2)}
@@ -228,7 +230,14 @@ export default function Index() {
             className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#F6FFFB]"
             style={{ padding: 15 }}
           >
-            <Text style={{ fontWeight: 600, color: "#005F42" }}>
+            <Text
+              style={{
+                fontWeight: 600,
+                color: "#005F42",
+                fontFamily: "GothamMedium",
+                textAlign: "center",
+              }}
+            >
               ITEMS YOU MIGHT CONSIDER BUYING
             </Text>
 
@@ -240,7 +249,14 @@ export default function Index() {
             className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#F6FFFB]"
             style={{ padding: 15 }}
           >
-            <Text style={{ fontWeight: 600, color: "#FF0000" }}>
+            <Text
+              style={{
+                fontWeight: 600,
+                color: "#FF0000",
+                fontFamily: "GothamMedium",
+                textAlign: "center",
+              }}
+            >
               SAVE UP!!!
             </Text>
 

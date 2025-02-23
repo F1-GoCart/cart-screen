@@ -85,16 +85,19 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: "bold",
+    fontFamily: "GothamMedium",
     color: "#333",
   },
   itemQuantity: {
     fontSize: 14,
     color: "gray",
+    fontFamily: "GothamBook",
     marginTop: 5,
   },
   itemPrice: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#000",
+    fontFamily: "GothamBold",
   },
 });
