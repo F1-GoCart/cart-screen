@@ -139,20 +139,20 @@ export type Database = {
         Row: {
           cart_id: number
           item_id: number
+          quantity: number | null
           scanned_date: string
-          status: boolean | null
         }
         Insert: {
           cart_id: number
           item_id: number
+          quantity?: number | null
           scanned_date: string
-          status?: boolean | null
         }
         Update: {
           cart_id?: number
           item_id?: number
+          quantity?: number | null
           scanned_date?: string
-          status?: boolean | null
         }
         Relationships: [
           {

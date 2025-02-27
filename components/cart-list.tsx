@@ -21,7 +21,7 @@ export default function List({ scannedItems, showImage = false }: Props) {
           renderItem={({ item, index }) => (
             <Item scannedItem={item} index={index} showImage={showImage} />
           )}
-          keyExtractor={(item) => item.item_id.toString()}
+          keyExtractor={(_, index) => index.toString()}
           showsVerticalScrollIndicator={false}
         />
       </View>

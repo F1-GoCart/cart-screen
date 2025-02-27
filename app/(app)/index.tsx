@@ -14,6 +14,7 @@ import { supabase } from "~/lib/supabase";
 import { useEffect, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
+import { cart_id as current_cart } from "~/lib/constants";
 
 // const getTotalItems = (items: CartItems[]) => {
 //   return items.reduce((total, item) => total + item.itemQuantity, 0);
@@ -37,8 +38,39 @@ export default function Index() {
 
   const fetchItems = async () => {
     const { data, error } = await supabase.from("scanned_items").select(`
+      cart_id,
+      item_id,
+      scanned_date,
+      quantity,
+      product_details: item_id (
         id,
-        status,
+        name,
+        size,
+        price,
+        category,
+        image
+      )
+    `);
+
+    if (error) {
+      console.error("Error fetching items:", error);
+      return;
+    }
+
+    if (data) {
+      setScannedItems(data as ScannedItem[]);
+    }
+  };
+
+  const fetchFullItem = async (item_id: number) => {
+    const { data, error } = await supabase
+      .from("scanned_items")
+      .select(
+        `
+        cart_id,
+        item_id,
+        scanned_date,
+        quantity,
         product_details: item_id (
           id,
           name,
@@ -47,20 +79,17 @@ export default function Index() {
           category,
           image
         )
-      `);
+      `,
+      )
+      .eq("item_id", item_id)
+      .single();
 
     if (error) {
-      console.error("Error fetching items:", error);
-      console.error("Supabase debug info:", error.details);
-      return;
+      console.error("Error fetching full item details:", error);
+      return null;
     }
 
-    if (data) {
-      setScannedItems(data as ScannedItem[]);
-      console.log("Data:", data);
-    }
-
-    console.log("Data: ", data);
+    return data as ScannedItem;
   };
 
   useEffect(() => {
@@ -72,23 +101,34 @@ export default function Index() {
         "postgres_changes",
         { event: "*", schema: "public", table: "scanned_items" },
         (payload) => {
-          console.log("Realtime update received:", payload);
-          const { eventType, new: newItem, old: oldItem } = payload;
+          const { eventType, new: newItem } = payload;
 
           setScannedItems((prevItems) => {
             switch (eventType) {
               case "INSERT":
-                return [...prevItems, newItem as ScannedItem];
+                if (newItem.cart_id.toString() === current_cart.slice(-1)) {
+                  fetchFullItem(newItem.item_id).then((fullItem) => {
+                    if (fullItem) {
+                      setScannedItems((prevItems) => [...prevItems, fullItem]);
+                    }
+                  });
+                }
+                return prevItems;
+
               case "UPDATE":
-                return prevItems.map((item) =>
-                  item.id === (newItem as ScannedItem).id
-                    ? (newItem as ScannedItem)
-                    : item,
-                );
-              case "DELETE":
-                return prevItems.filter(
-                  (item) => item.id !== (oldItem as ScannedItem).id,
-                );
+                if (newItem.cart_id.toString() === current_cart.slice(-1)) {
+                  fetchFullItem(newItem.item_id).then((fullItem) => {
+                    if (fullItem) {
+                      setScannedItems((prevItems) =>
+                        prevItems.map((item) =>
+                          item.item_id === newItem.item_id ? fullItem : item,
+                        ),
+                      );
+                    }
+                  });
+                }
+                return prevItems;
+
               default:
                 return prevItems;
             }
@@ -195,7 +235,6 @@ export default function Index() {
                   marginLeft: 10,
                   fontFamily: "gotham-rounded-bold",
                   marginBottom: 5,
-                  fontFamily: "GothamMedium",
                 }}
               >
                 Items: {totalItems}
