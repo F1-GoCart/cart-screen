@@ -18,7 +18,7 @@ export default function SaveUpItemList({ saveUpItemList }: Props) {
           <SaveUpItem saveUpItem={item} index={index} />
         )}
         keyExtractor={(item) => item.itemName}
-        showsHorizontalScrollIndicator={true}
+        showsHorizontalScrollIndicator={false}
       />
     </View>
   );
