@@ -5,7 +5,6 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import List from "../../components/cart-list";
 import SuggestedItemList from "../../components/carousel-suggested-list";
 import SaveUpItemList from "../../components/carousel-save-up-list";
-import { CartItems, cartItems } from "../../components/item-list";
 import { suggestedItems } from "../../components/suggested-item-list";
 import { saveUpItems } from "../../components/save-up-item-list";
 import { Card } from "~/components/ui/card";
@@ -143,11 +142,24 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    setTotalItems(scannedItems.length);
-    const total = scannedItems.reduce((acc, item) => {
-      return acc + (item.product_details.price || 0);
-    }, 0);
-    setTotalAmount(total);
+    setTotalItems(() => {
+      const totalItems = scannedItems.reduce(
+        (sum, item) => sum + (item.quantity ?? 0),
+        0,
+      );
+
+      return totalItems;
+    });
+
+    setTotalAmount(() => {
+      const totalAmount = scannedItems.reduce(
+        (sum, item) =>
+          sum + (item.product_details.price ?? 0) * (item.quantity ?? 0),
+        0,
+      );
+
+      return totalAmount;
+    });
   }, [scannedItems]);
 
   return (

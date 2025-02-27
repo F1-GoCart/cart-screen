@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function Item({ scannedItem, showImage }: Props) {
-  if (scannedItem) {
+  if (scannedItem && scannedItem.quantity && scannedItem.quantity > 0) {
     return (
       <View style={styles.itemContainer}>
         {showImage &&
