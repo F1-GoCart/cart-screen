@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import type { CartItems } from "./item-list";
 import { Database } from "~/lib/database.types";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
@@ -9,29 +8,11 @@ type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
 
 type Props = {
   index: number;
-  item?: CartItems;
-  scannedItem?: ScannedItem;
+  scannedItem: ScannedItem;
   showImage: boolean;
 };
 
-export default function Item({ item, scannedItem, showImage }: Props) {
-  if (item) {
-    return (
-      <View style={styles.itemContainer}>
-        {showImage && (
-          <Image source={item.image} style={styles.image} resizeMode="cover" />
-        )}
-        <View style={styles.detailsContainer}>
-          <Text style={styles.itemName}>
-            {item.itemName} {item.itemSize}
-          </Text>
-          <Text style={styles.itemQuantity}>x{item.itemQuantity}</Text>
-        </View>
-        <Text style={styles.itemPrice}>₱{item.itemPrice.toFixed(2)}</Text>
-      </View>
-    );
-  }
-
+export default function Item({ scannedItem, showImage }: Props) {
   if (scannedItem) {
     return (
       <View style={styles.itemContainer}>
@@ -56,7 +37,7 @@ export default function Item({ item, scannedItem, showImage }: Props) {
             {scannedItem.product_details.name}{" "}
             {scannedItem.product_details.size}
           </Text>
-          <Text style={styles.itemQuantity}>qtty here</Text>
+          <Text style={styles.itemQuantity}>{scannedItem.quantity}</Text>
         </View>
         <Text style={styles.itemPrice}>
           {/* ₱{scannedItem.product_details.price} */}₱

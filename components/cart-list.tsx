@@ -1,7 +1,6 @@
 import React from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import Item from "./item";
-import type { CartItems } from "./item-list";
 import { Database } from "~/lib/database.types";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
@@ -9,31 +8,11 @@ type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
 };
 
 type Props = {
-  itemList?: CartItems[];
   scannedItems?: ScannedItem[];
   showImage?: boolean;
 };
 
-export default function List({
-  itemList,
-  scannedItems,
-  showImage = false,
-}: Props) {
-  if (itemList) {
-    return (
-      <View style={styles.container}>
-        <FlatList
-          data={itemList}
-          renderItem={({ item, index }) => (
-            <Item item={item} index={index} showImage={showImage} />
-          )}
-          keyExtractor={(item) => item.itemName}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    );
-  }
-
+export default function List({ scannedItems, showImage = false }: Props) {
   if (scannedItems) {
     return (
       <View style={styles.container}>
@@ -42,7 +21,7 @@ export default function List({
           renderItem={({ item, index }) => (
             <Item scannedItem={item} index={index} showImage={showImage} />
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.item_id.toString()}
           showsVerticalScrollIndicator={false}
         />
       </View>
