@@ -3,18 +3,12 @@ import { View, Text, Image } from "react-native";
 import Svg, { ClipPath, Defs, G, Path, Rect } from "react-native-svg";
 import { SafeAreaView, StyleSheet } from "react-native";
 import List from "../../components/cart-list";
-import SuggestedItemList from "../../components/carousel-suggested-list";
-import SaveUpItemList from "../../components/carousel-save-up-list";
-import { CartItems, cartItems } from "../../components/item-list";
-import { suggestedItems } from "../../components/suggested-item-list";
-import { saveUpItems } from "../../components/save-up-item-list";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { supabase } from "~/lib/supabase";
 import { useEffect, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
-import { Car } from "lucide-react-native";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 
@@ -40,78 +34,54 @@ export default function Checkout() {
 
   const fetchItems = async () => {
     const { data, error } = await supabase.from("scanned_items").select(`
+      cart_id,
+      item_id,
+      scanned_date,
+      quantity,
+      product_details: item_id (
         id,
-        status,
-        product_details: item_id (
-          id,
-          name,
-          size,
-          price,
-          category,
-          image
-        )
-      `);
+        name,
+        size,
+        price,
+        category,
+        image
+      )
+    `);
 
     if (error) {
       console.error("Error fetching items:", error);
-      console.error("Supabase debug info:", error.details);
       return;
     }
 
     if (data) {
       setScannedItems(data as ScannedItem[]);
-      console.log("Data:", data);
     }
-
-    console.log("Data: ", data);
   };
 
   useEffect(() => {
-    fetchItems();
+    setTotalItems(() => {
+      const totalItems = scannedItems.reduce(
+        (sum, item) => sum + (item.quantity ?? 0),
+        0,
+      );
 
-    const channel = supabase
-      .channel("scanned_items")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "scanned_items" },
-        (payload) => {
-          console.log("Realtime update received:", payload);
-          const { eventType, new: newItem, old: oldItem } = payload;
+      return totalItems;
+    });
 
-          setScannedItems((prevItems) => {
-            switch (eventType) {
-              case "INSERT":
-                return [...prevItems, newItem as ScannedItem];
-              case "UPDATE":
-                return prevItems.map((item) =>
-                  item.id === (newItem as ScannedItem).id
-                    ? (newItem as ScannedItem)
-                    : item,
-                );
-              case "DELETE":
-                return prevItems.filter(
-                  (item) => item.id !== (oldItem as ScannedItem).id,
-                );
-              default:
-                return prevItems;
-            }
-          });
-        },
-      )
-      .subscribe();
+    setTotalAmount(() => {
+      const totalAmount = scannedItems.reduce(
+        (sum, item) =>
+          sum + (item.product_details.price ?? 0) * (item.quantity ?? 0),
+        0,
+      );
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+      return totalAmount;
+    });
+  }, [scannedItems]);
 
   useEffect(() => {
-    setTotalItems(scannedItems.length);
-    const total = scannedItems.reduce((acc, item) => {
-      return acc + (item.product_details.price || 0);
-    }, 0);
-    setTotalAmount(total);
-  }, [scannedItems]);
+    fetchItems();
+  }, []);
 
   const [fontsLoaded] = useFonts({
     GothamBook: require("../../assets/fonts/gotham-book.otf"),

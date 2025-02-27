@@ -17,7 +17,7 @@ export default function SuggestedItemList({ suggestedItemList }: Props) {
           <SuggestedItem suggestedItem={item} index={index} />
         )}
         keyExtractor={(item) => item.itemName}
-        showsHorizontalScrollIndicator={true}
+        showsHorizontalScrollIndicator={false}
       />
     </View>
   );
