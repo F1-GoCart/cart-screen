@@ -15,12 +15,18 @@ import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
 import { cart_id as current_cart } from "~/lib/constants";
 import AdminAuthorizationDialog from "~/components/admin-auth";
+import { useItemStore } from "~/stores/ItemsStore";
+
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };
 
 export default function Index() {
+  const setGlobalItems = useItemStore((state) => state.setScannedItems);
+  const setGlobalTotalItems = useItemStore((state) => state.setTotalItems);
+  const setGlobalTotalAmount = useItemStore((state) => state.setTotalAmount);
+
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(0);
@@ -157,7 +163,14 @@ export default function Index() {
 
       return totalAmount;
     });
+
+    setGlobalItems(scannedItems);
   }, [scannedItems]);
+
+  useEffect(() => {
+    setGlobalTotalItems(totalItems);
+    setGlobalTotalAmount(totalAmount);
+  }, [totalItems, totalAmount]);
 
   return (
     <View className="flex-1 pb-10 pl-5 pr-5 pt-10">

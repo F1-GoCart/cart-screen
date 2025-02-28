@@ -11,77 +11,16 @@ import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
-
-// const getTotalItems = (items: CartItems[]) => {
-//   return items.reduce((total, item) => total + item.itemQuantity, 0);
-// };
-
-// export const getTotalAmount = (items: CartItems[]) => {
-//   return items.reduce(
-//     (total, item) => total + item.itemPrice * item.itemQuantity,
-//     0,
-//   );
-// };
+import { useItemStore } from "~/stores/ItemsStore";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };
 
 export default function Checkout() {
-  const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
-  const [totalItems, setTotalItems] = useState<number>(0);
-  const [totalAmount, setTotalAmount] = useState<number>(0);
-
-  const fetchItems = async () => {
-    const { data, error } = await supabase.from("scanned_items").select(`
-      cart_id,
-      item_id,
-      scanned_date,
-      quantity,
-      product_details: item_id (
-        id,
-        name,
-        size,
-        price,
-        category,
-        image
-      )
-    `);
-
-    if (error) {
-      console.error("Error fetching items:", error);
-      return;
-    }
-
-    if (data) {
-      setScannedItems(data as ScannedItem[]);
-    }
-  };
-
-  useEffect(() => {
-    setTotalItems(() => {
-      const totalItems = scannedItems.reduce(
-        (sum, item) => sum + (item.quantity ?? 0),
-        0,
-      );
-
-      return totalItems;
-    });
-
-    setTotalAmount(() => {
-      const totalAmount = scannedItems.reduce(
-        (sum, item) =>
-          sum + (item.product_details.price ?? 0) * (item.quantity ?? 0),
-        0,
-      );
-
-      return totalAmount;
-    });
-  }, [scannedItems]);
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
+  const items = useItemStore((state) => state.scannedItems);
+  const totalAmount = useItemStore((state) => state.totalAmount);
+  const totalItems = useItemStore((state) => state.totalItems);
 
   const [fontsLoaded] = useFonts({
     GothamBook: require("../../assets/fonts/gotham-book.otf"),
@@ -219,7 +158,7 @@ export default function Checkout() {
           <Card className="mt-7 h-full w-full rounded-3xl border-0 bg-[#E6E6E6]">
             <SafeAreaView style={styles.container}>
               <List
-                scannedItems={scannedItems}
+                scannedItems={items}
                 showImage={false}
                 swipeable={false}
               />
