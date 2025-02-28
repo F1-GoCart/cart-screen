@@ -51,6 +51,7 @@ export default function Item({ scannedItem, showImage }: Props) {
 const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
+    backgroundColor: "#E6E6E6",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 10,

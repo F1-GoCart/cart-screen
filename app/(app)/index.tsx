@@ -14,17 +14,7 @@ import { useEffect, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
 import { cart_id as current_cart } from "~/lib/constants";
-
-// const getTotalItems = (items: CartItems[]) => {
-//   return items.reduce((total, item) => total + item.itemQuantity, 0);
-// };
-
-// export const getTotalAmount = (items: CartItems[]) => {
-//   return items.reduce(
-//     (total, item) => total + item.itemPrice * item.itemQuantity,
-//     0,
-//   );
-// };
+import AdminAuthorizationDialog from "~/components/admin-auth";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
@@ -34,6 +24,8 @@ export default function Index() {
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [isDialogVisible, setDialogVisible] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const fetchItems = async () => {
     const { data, error } = await supabase.from("scanned_items").select(`
@@ -59,6 +51,11 @@ export default function Index() {
     if (data) {
       setScannedItems(data as ScannedItem[]);
     }
+  };
+
+  const handleDelete = (item_id: string) => {
+    setSelectedItemId(item_id);
+    setDialogVisible(true);
   };
 
   const fetchFullItem = async (item_id: number) => {
@@ -191,7 +188,12 @@ export default function Index() {
         <Card className="mt-5 flex h-full w-full max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-14">
           <Card className="mt-5 h-full w-full rounded-3xl border-0 bg-[#E6E6E6]">
             <SafeAreaView style={styles.container}>
-              <List scannedItems={scannedItems} showImage={true} />
+              <List
+                scannedItems={scannedItems}
+                showImage={true}
+                swipeable={true}
+                onDelete={handleDelete}
+              />
             </SafeAreaView>
           </Card>
           <View className="flex-row">
@@ -277,16 +279,15 @@ export default function Index() {
         </Card>
 
         <Card className="mt-5 flex h-full w-full max-w-sm items-center justify-center gap-3 rounded-3xl border-0 bg-[#E1FFEF] p-5">
-          <Card
-            className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#F6FFFB]"
-            style={{ padding: 15 }}
-          >
+          <Card className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
             <Text
               style={{
                 fontWeight: 600,
                 color: "#005F42",
                 fontFamily: "GothamMedium",
                 textAlign: "center",
+                paddingTop: 25,
+                marginBottom: 10,
               }}
             >
               ITEMS YOU MIGHT CONSIDER BUYING
@@ -296,16 +297,15 @@ export default function Index() {
               <SuggestedItemList suggestedItemList={suggestedItems} />
             </SafeAreaView>
           </Card>
-          <Card
-            className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#F6FFFB]"
-            style={{ padding: 15 }}
-          >
+          <Card className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
             <Text
               style={{
                 fontWeight: 600,
                 color: "#FF0000",
                 fontFamily: "GothamMedium",
                 textAlign: "center",
+                paddingTop: 25,
+                marginBottom: 10,
               }}
             >
               SAVE UP!!!
@@ -317,6 +317,13 @@ export default function Index() {
           </Card>
         </Card>
       </View>
+      {isDialogVisible && (
+        <AdminAuthorizationDialog
+          visible={isDialogVisible}
+          onClose={() => setDialogVisible(false)}
+          itemId={selectedItemId}
+        />
+      )}
     </View>
   );
 }
