@@ -17,4 +17,4 @@ export const NAV_THEME = {
   },
 };
 
-export const cart_id = "go-cart-01";
+export const cart_id = "go-cart-02";
