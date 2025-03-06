@@ -3,8 +3,6 @@ import { supabase } from "~/lib/supabase";
 import { Text } from "~/components/ui/text";
 import React, { useEffect, useState } from "react";
 import QRCode from "react-native-qrcode-svg";
-import { useFonts } from "expo-font";
-import AppLoading from "expo-app-loading";
 
 import {
   Card,
@@ -27,16 +25,6 @@ export default function LoginScreen() {
       console.error("Error updating status: ", error.message);
     }
   };
-
-  const [fontsLoaded] = useFonts({
-    GothamBook: require("../../assets/fonts/gotham-book.otf"),
-    GothamBold: require("../../assets/fonts/gotham-bold.ttf"),
-    GothamMedium: require("../../assets/fonts/gotham-medium.otf"),
-  });
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
 
   return (
     <View className="items-center justify-between pt-20">

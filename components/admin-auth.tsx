@@ -10,8 +10,6 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import { Text } from "~/components/ui/text";
-import { useFonts } from "expo-font";
-import AppLoading from "expo-app-loading";
 import EditQuantityDialog from "./edit-quantity";
 
 type AdminAuthorizationDialogProps = {
@@ -25,17 +23,7 @@ const AdminAuthorizationDialog: React.FC<AdminAuthorizationDialogProps> = ({
   itemId,
   onClose,
 }) => {
-  const [fontsLoaded] = useFonts({
-    GothamBook: require("../assets/fonts/gotham-book.otf"),
-    GothamBold: require("../assets/fonts/gotham-bold.ttf"),
-    GothamMedium: require("../assets/fonts/gotham-medium.otf"),
-  });
-
   const [isAccessGranted, setIsAccessGranted] = React.useState(false);
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
 
   const handleEnterPress = () => {
     setIsAccessGranted(true);

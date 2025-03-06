@@ -1,20 +1,8 @@
 import * as React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import { useFonts } from "expo-font";
 import Svg, { Path } from "react-native-svg";
-import AppLoading from "expo-app-loading";
 
 const PaymentSuccess = () => {
-  const [fontsLoaded] = useFonts({
-    GothamBook: require("../../assets/fonts/gotham-book.otf"),
-    GothamBold: require("../../assets/fonts/gotham-bold.ttf"),
-    GothamMedium: require("../../assets/fonts/gotham-medium.otf"),
-  });
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
-
   return (
     <View style={styles.container}>
       <Svg width="572" height="126" viewBox="0 0 572 126" fill="none">

@@ -12,8 +12,12 @@ import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Appearance } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+import * as NavigationBar from "expo-navigation-bar";
+import { setStatusBarHidden } from "expo-status-bar";
+import { useFonts } from "expo-font";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -27,11 +31,28 @@ const DARK_THEME: Theme = {
 export { ErrorBoundary } from "expo-router";
 
 Appearance.setColorScheme("light");
+NavigationBar.setPositionAsync("relative");
+NavigationBar.setVisibilityAsync("hidden");
+NavigationBar.setBehaviorAsync("inset-swipe");
+setStatusBarHidden(true, "none");
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const hasMounted = useRef(false);
   const { colorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = useState(false);
+
+  const [loaded, error] = useFonts({
+    GothamBook: require("~/assets/fonts/gotham-book.otf"),
+    GothamBold: require("~/assets/fonts/gotham-bold.ttf"),
+    GothamMedium: require("~/assets/fonts/gotham-medium.otf"),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
 
   useLayoutEffect(() => {
     if (hasMounted.current) {
@@ -43,7 +64,7 @@ export default function RootLayout() {
     hasMounted.current = true;
   }, []);
 
-  if (!isColorSchemeLoaded) {
+  if (!isColorSchemeLoaded && !loaded && !error) {
     return null;
   }
 

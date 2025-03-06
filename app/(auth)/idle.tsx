@@ -3,24 +3,13 @@ import { Text } from "~/components/ui/text";
 import React from "react";
 import { useRouter } from "expo-router";
 import Svg, { Path } from "react-native-svg";
-import { useFonts } from "expo-font";
-import AppLoading from "expo-app-loading";
+
 export default function IdleScreen() {
   const router = useRouter();
 
   const activateCart = () => {
     router.push("/(auth)/login");
   };
-
-  const [fontsLoaded] = useFonts({
-    GothamBook: require("../../assets/fonts/gotham-book.otf"),
-    GothamBold: require("../../assets/fonts/gotham-bold.ttf"),
-    GothamMedium: require("../../assets/fonts/gotham-medium.otf"),
-  });
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
 
   return (
     <TouchableOpacity

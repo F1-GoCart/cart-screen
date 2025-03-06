@@ -38,6 +38,14 @@
             "./assets/fonts/gotham-book.otf"
           ]
         }
+      ],
+      [
+        "expo-navigation-bar",
+        {
+          "position": "relative",
+          "visibility": "hidden",
+          "behavior": "inset-swipe"
+        }
       ]
     ],
     "experiments": {

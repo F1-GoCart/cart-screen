@@ -9,8 +9,6 @@ import { supabase } from "~/lib/supabase";
 import { useEffect, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
-import { useFonts } from "expo-font";
-import AppLoading from "expo-app-loading";
 import { useItemStore } from "~/stores/ItemsStore";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
@@ -21,16 +19,6 @@ export default function Checkout() {
   const items = useItemStore((state) => state.scannedItems);
   const totalAmount = useItemStore((state) => state.totalAmount);
   const totalItems = useItemStore((state) => state.totalItems);
-
-  const [fontsLoaded] = useFonts({
-    GothamBook: require("../../assets/fonts/gotham-book.otf"),
-    GothamBold: require("../../assets/fonts/gotham-bold.ttf"),
-    GothamMedium: require("../../assets/fonts/gotham-medium.otf"),
-  });
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
 
   return (
     <View className="flex-1 pb-10 pl-5 pr-5 pt-10">
@@ -157,11 +145,7 @@ export default function Checkout() {
         <Card className="mt-5 flex h-full w-full max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-11">
           <Card className="mt-7 h-full w-full rounded-3xl border-0 bg-[#E6E6E6]">
             <SafeAreaView style={styles.container}>
-              <List
-                scannedItems={items}
-                showImage={false}
-                swipeable={false}
-              />
+              <List scannedItems={items} showImage={false} swipeable={false} />
             </SafeAreaView>
           </Card>
           <View className="flex-row items-center">
