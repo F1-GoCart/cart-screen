@@ -8,6 +8,7 @@ import { cart_id } from "~/lib/constants";
 import QRCode from "react-native-qrcode-svg";
 import { useTimer } from "react-timer-hook";
 import { router } from "expo-router";
+import { toast } from "sonner-native";
 
 const PaymentScreen = () => {
   const totalAmount = useItemStore((state) => state.totalAmount);
@@ -82,7 +83,15 @@ const PaymentScreen = () => {
               <Button
                 className="mt-8 w-full"
                 variant="secondary"
-                onPress={() => router.back()}
+                onPress={() => {
+                  toast.error("Payment cancelled", {
+                    style: {
+                      width: 200,
+                    },
+                    position: "bottom-center",
+                  });
+                  router.back();
+                }}
               >
                 <Text>Cancel</Text>
               </Button>
