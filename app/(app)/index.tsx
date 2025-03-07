@@ -17,7 +17,6 @@ import { cart_id as current_cart } from "~/lib/constants";
 import AdminAuthorizationDialog from "~/components/admin-auth";
 import { useItemStore } from "~/stores/ItemsStore";
 
-
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };

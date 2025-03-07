@@ -256,7 +256,7 @@ export default function Checkout() {
               alignItems: "center",
               justifyContent: "center",
             }}
-            onPress={() => router.push("/payment-success")}
+            onPress={() => router.push("/payment")}
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text
