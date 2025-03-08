@@ -33,7 +33,23 @@ export default function Index() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const fetchItems = async () => {
-    const { data, error } = await supabase.from("scanned_items").select(`
+    const { data: cartData, error: cartError } = await supabase
+      .from("shopping_carts")
+      .select("user_id")
+      .eq("cart_id", current_cart)
+      .single();
+
+    if (cartError) {
+      console.error("Error fetching cart data:", cartError);
+      return;
+    }
+
+    const cart_number = parseInt(current_cart.replace("go-cart-", ""));
+
+    const { data, error } = await supabase
+      .from("scanned_items")
+      .select(
+        `
       cart_id,
       item_id,
       scanned_date,
@@ -46,7 +62,10 @@ export default function Index() {
         category,
         image
       )
-    `);
+    `,
+      )
+      .eq("cart_id", cart_number)
+      .eq("user_id", cartData!.user_id!);
 
     if (error) {
       console.error("Error fetching items:", error);
@@ -95,12 +114,18 @@ export default function Index() {
 
   useEffect(() => {
     fetchItems();
+    const cart_number = parseInt(current_cart.replace("go-cart-", ""));
 
     const channel = supabase
       .channel("scanned_items")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "scanned_items" },
+        {
+          event: "*",
+          schema: "public",
+          table: "scanned_items",
+          filter: "cart_id=eq." + cart_number,
+        },
         (payload) => {
           const { eventType, new: newItem } = payload;
 

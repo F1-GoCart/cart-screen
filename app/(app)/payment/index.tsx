@@ -11,11 +11,13 @@ import { toast } from "sonner-native";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 import SuccessLogo from "~/assets/images/success.svg";
+import { supabase } from "~/lib/supabase";
 
 const PaymentScreen = () => {
   const [transactionId] = useState(uuidv4());
   const [isSuccess, setIsSuccess] = useState(false);
   const totalAmount = useItemStore((state) => state.totalAmount);
+  const scannedItems = useItemStore((state) => state.scannedItems);
   const time = new Date();
   time.setSeconds(time.getSeconds() + 300);
   const { seconds, minutes, pause } = useTimer({
@@ -121,8 +123,67 @@ const PaymentScreen = () => {
                       });
                       router.back();
                     }}
-                    // Sucess on long press
-                    onLongPress={() => {
+                    // Success on long press
+                    onLongPress={async () => {
+                      const { data: cart, error: cartError } = await supabase
+                        .from("shopping_carts")
+                        .select("user_id")
+                        .eq("cart_id", cart_id)
+                        .single();
+
+                      if (cartError) {
+                        console.error("Error fetching cart:", cartError);
+                        console.error(
+                          "Supabase debug info:",
+                          cartError.details,
+                        );
+                        return;
+                      }
+
+                      const user_id = cart!.user_id;
+
+                      const { error } = await supabase
+                        .from("purchase_history")
+                        .insert({
+                          id: transactionId,
+                          total_price: totalAmount,
+                          change: 0,
+                          mode_of_payment: "gcash",
+                          user_id,
+                          cart_id: parseInt(cart_id.split("-")[2]),
+                        });
+
+                      for (const item of scannedItems) {
+                        const { error: itemError } = await supabase
+                          .from("purchased_items")
+                          .insert({
+                            id: transactionId,
+                            item_id: item.item_id,
+                            quantity: item.quantity!,
+                          });
+
+                        if (itemError) {
+                          console.error(
+                            "Error inserting purchased item:",
+                            itemError,
+                          );
+                          console.error(
+                            "Supabase debug info:",
+                            itemError.details,
+                          );
+                          return;
+                        }
+                      }
+
+                      if (error) {
+                        console.error(
+                          "Error inserting purchase history:",
+                          error,
+                        );
+                        console.error("Supabase debug info:", error.details);
+                        return;
+                      }
+
                       setIsSuccess(true);
                       pause();
                       start();
