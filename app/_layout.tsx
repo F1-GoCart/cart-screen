@@ -1,4 +1,5 @@
 import "~/global.css";
+import "react-native-get-random-values";
 
 import {
   DarkTheme,

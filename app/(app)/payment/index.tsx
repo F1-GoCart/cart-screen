@@ -1,4 +1,3 @@
-import * as React from "react";
 import { View, Image } from "react-native";
 import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
@@ -9,12 +8,39 @@ import QRCode from "react-native-qrcode-svg";
 import { useTimer } from "react-timer-hook";
 import { router } from "expo-router";
 import { toast } from "sonner-native";
+import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
+import SuccessLogo from "~/assets/images/success.svg";
 
 const PaymentScreen = () => {
+  const [transactionId] = useState(uuidv4());
+  const [isSuccess, setIsSuccess] = useState(false);
   const totalAmount = useItemStore((state) => state.totalAmount);
   const time = new Date();
   time.setSeconds(time.getSeconds() + 300);
-  const { seconds, minutes } = useTimer({ expiryTimestamp: time });
+  const { seconds, minutes, pause } = useTimer({
+    expiryTimestamp: time,
+    onExpire: () => {
+      toast.error("Transaction Timeout", {
+        description: "Your payment session has expired. Please try again.",
+        style: {
+          width: 400,
+        },
+        position: "bottom-center",
+      });
+      router.back();
+    },
+  });
+
+  const successTime = new Date();
+  successTime.setSeconds(successTime.getSeconds() + 5);
+  const { seconds: successSeconds, start } = useTimer({
+    expiryTimestamp: successTime,
+    onExpire: () => {
+      router.push("/payment/success");
+    },
+    autoStart: false,
+  });
 
   return (
     <>
@@ -28,7 +54,7 @@ const PaymentScreen = () => {
             <View className="gap-1">
               <Text className="text-right">Transaction ID:</Text>
               <Text className="w-fit rounded-md border border-white px-2 py-1">
-                ab0c5fe1-88b1-4434-a737-e8984952c24f
+                {transactionId}
               </Text>
             </View>
           </View>
@@ -48,54 +74,98 @@ const PaymentScreen = () => {
             </View>
           </View>
           <View className="align-center flex-1 px-8 py-10">
-            <View className="flex-row items-center gap-3">
-              <Text className="text-lg text-[#7a8394]">Payment Method</Text>
-              <Text className="rounded-full bg-[#e1e5ea] px-2 py-1 text-sm font-medium">
-                QR PH
-              </Text>
-            </View>
-            <View className="mb-10 mt-6 border-b border-gray-300" />
-            <View className="items-center">
-              <Text className="text-2xl font-medium">Scan to Pay</Text>
-              <Text className="mb-9 mt-3 text-center text-[#8c94a2]">
-                Scan or upload to pay via your{"\n"}bank or e-wallet app within
-                5 minutes
-              </Text>
-              <View className="m-auto">
-                <QRCode
-                  value="http://awesome.link.qr"
-                  logo={require("~/assets/images/qrph.jpg")}
-                  size={150}
-                />
-              </View>
-              <Text className="mb-1 mt-2">PAYMONGO-GoCart</Text>
-              <View className="flex-row items-center gap-1">
-                <Text className="text-[#8c94a2]">Time remaining:</Text>
-                <Text>
-                  {minutes}m {seconds}s
-                </Text>
-              </View>
-              <Text className="mt-5 rounded-md border-2 border-[#4188d8] bg-[#edf5fd] px-3 py-2 text-sm leading-[1.3] text-[#4188d8]">
-                Please keep the payment receipt sent by your partner bank or
-                e-wallet in case of dispute. For any refund requests, contact
-                your merchant directly.
-              </Text>
-              <Button
-                className="mt-8 w-full"
-                variant="secondary"
-                onPress={() => {
-                  toast.error("Payment cancelled", {
-                    style: {
-                      width: 200,
-                    },
-                    position: "bottom-center",
-                  });
-                  router.back();
-                }}
-              >
-                <Text>Cancel</Text>
-              </Button>
-            </View>
+            {!isSuccess ? (
+              <>
+                <View className="flex-row items-center gap-3">
+                  <Text className="text-lg text-[#7a8394]">Payment Method</Text>
+                  <Text className="rounded-full bg-[#e1e5ea] px-2 py-1 text-sm font-medium">
+                    QR PH
+                  </Text>
+                </View>
+                <View className="mb-10 mt-6 border-b border-gray-300" />
+                <View className="items-center">
+                  <Text className="text-2xl font-medium">Scan to Pay</Text>
+                  <Text className="mb-9 mt-3 text-center text-[#8c94a2]">
+                    Scan or upload to pay via your{"\n"}bank or e-wallet app
+                    within 5 minutes
+                  </Text>
+                  <View className="m-auto">
+                    <QRCode
+                      value="http://awesome.link.qr"
+                      logo={require("~/assets/images/qrph.jpg")}
+                      size={150}
+                    />
+                  </View>
+                  <Text className="mb-1 mt-2">PAYMONGO-GoCart</Text>
+                  <View className="flex-row items-center gap-1">
+                    <Text className="text-[#8c94a2]">Time remaining:</Text>
+                    <Text>
+                      {minutes}m {seconds}s
+                    </Text>
+                  </View>
+                  <Text className="mt-5 rounded-md border-2 border-[#4188d8] bg-[#edf5fd] px-3 py-2 text-sm leading-[1.3] text-[#4188d8]">
+                    Please keep the payment receipt sent by your partner bank or
+                    e-wallet in case of dispute. For any refund requests,
+                    contact your merchant directly.
+                  </Text>
+                  <Button
+                    className="mt-8 w-full"
+                    variant="secondary"
+                    onPress={() => {
+                      toast.error("Payment Cancelled", {
+                        description: "You have cancelled the payment process.",
+                        style: {
+                          width: 400,
+                        },
+                        position: "bottom-center",
+                      });
+                      router.back();
+                    }}
+                    // Sucess on long press
+                    onLongPress={() => {
+                      setIsSuccess(true);
+                      pause();
+                      start();
+                    }}
+                  >
+                    <Text>Cancel</Text>
+                  </Button>
+                </View>
+              </>
+            ) : (
+              <>
+                <View className="flex-row items-center gap-3">
+                  <Text className="text-lg text-[#7a8394]">Payment Method</Text>
+                  <Text className="rounded-full bg-[#e1e5ea] px-2 py-1 text-sm font-medium">
+                    QR PH
+                  </Text>
+                </View>
+                <View className="mb-10 mt-6 border-b border-gray-300" />
+                <View className="items-center">
+                  <SuccessLogo width={96} height={96} />
+                  <Text className="my-5 text-2xl font-medium text-[#00985d]">
+                    Payment received!
+                  </Text>
+                  <Text className="text-sm text-[#8c94a2]">
+                    You will be redirected in {successSeconds} seconds
+                  </Text>
+                  <Text className="mt-5 rounded-md border-2 border-[#4188d8] bg-[#edf5fd] px-3 py-2 text-sm leading-[1.3] text-[#4188d8]">
+                    Please keep the payment receipt sent by your partner bank or
+                    e-wallet in case of dispute. For any refund requests,
+                    contact your merchant directly.
+                  </Text>
+                  <Button
+                    className="mt-8 w-full"
+                    variant="secondary"
+                    onPress={() => {
+                      router.push("/payment/success");
+                    }}
+                  >
+                    <Text>Redirect back to merchant</Text>
+                  </Button>
+                </View>
+              </>
+            )}
           </View>
         </View>
       </View>
