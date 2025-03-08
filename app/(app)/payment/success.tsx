@@ -2,8 +2,40 @@ import * as React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { Confetti } from "react-native-fast-confetti";
+import { useTimer } from "react-timer-hook";
+import { router } from "expo-router";
+import { supabase } from "~/lib/supabase";
+import { cart_id } from "~/lib/constants";
 
 const PaymentSuccess = () => {
+  const successTime = new Date();
+  successTime.setSeconds(successTime.getSeconds() + 10);
+  const { seconds: successSeconds } = useTimer({
+    expiryTimestamp: successTime,
+    onExpire: async () => {
+      const { error } = await supabase
+        .from("shopping_carts")
+        .update({ status: "not_in_use", user_id: null })
+        .eq("cart_id", cart_id);
+
+      if (error) {
+        console.error("Error updating cart status", error);
+      }
+
+      const cart_number = parseInt(cart_id.replace("go-cart-", ""));
+
+      const { error: scannedItemsError } = await supabase
+        .from("scanned_items")
+        .delete()
+        .eq("cart_id", cart_number);
+      if (scannedItemsError) {
+        console.error("Error deleting scanned items", scannedItemsError);
+      }
+
+      router.push("/login");
+    },
+  });
+
   return (
     <>
       <Confetti isInfinite={false} />
@@ -50,6 +82,8 @@ const PaymentSuccess = () => {
         <Text style={styles.body1Text}>
           Your e-receipt is available in the mobile app.
         </Text>
+
+        <Text style={styles.body1Text}>Redirecting in {successSeconds}</Text>
 
         <Text style={styles.body2Text}>Have a great day, shopper!</Text>
       </View>

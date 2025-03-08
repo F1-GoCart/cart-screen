@@ -141,21 +141,18 @@ export type Database = {
           item_id: number
           quantity: number | null
           scanned_date: string
-          user_id: string
         }
         Insert: {
           cart_id: number
           item_id: number
           quantity?: number | null
           scanned_date: string
-          user_id: string
         }
         Update: {
           cart_id?: number
           item_id?: number
           quantity?: number | null
           scanned_date?: string
-          user_id?: string
         }
         Relationships: [
           {
@@ -170,13 +167,6 @@ export type Database = {
             columns: ["item_id"]
             isOneToOne: false
             referencedRelation: "product_details"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "scanned_items_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]

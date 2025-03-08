@@ -33,17 +33,6 @@ export default function Index() {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const fetchItems = async () => {
-    const { data: cartData, error: cartError } = await supabase
-      .from("shopping_carts")
-      .select("user_id")
-      .eq("cart_id", current_cart)
-      .single();
-
-    if (cartError) {
-      console.error("Error fetching cart data:", cartError);
-      return;
-    }
-
     const cart_number = parseInt(current_cart.replace("go-cart-", ""));
 
     const { data, error } = await supabase
@@ -64,8 +53,7 @@ export default function Index() {
       )
     `,
       )
-      .eq("cart_id", cart_number)
-      .eq("user_id", cartData!.user_id!);
+      .eq("cart_id", cart_number);
 
     if (error) {
       console.error("Error fetching items:", error);

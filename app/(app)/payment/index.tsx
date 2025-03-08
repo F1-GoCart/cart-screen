@@ -148,7 +148,7 @@ const PaymentScreen = () => {
                           id: transactionId,
                           total_price: totalAmount,
                           change: 0,
-                          mode_of_payment: "gcash",
+                          mode_of_payment: "GCash",
                           user_id,
                           cart_id: parseInt(cart_id.split("-")[2]),
                         });
