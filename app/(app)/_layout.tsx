@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { supabase } from "~/lib/supabase";
 import useStatusStore from "~/stores/StatusStore";
 import { ShoppingCart } from "~/lib/interfaces";
-import { Href, Redirect, Slot } from "expo-router";
+import { Href, Redirect, Slot, Stack } from "expo-router";
 import { cart_id } from "~/lib/constants";
 
 export default function AppLayout() {
@@ -55,9 +55,12 @@ export default function AppLayout() {
     return <Redirect href={"/(auth)/idle" as Href} />;
   }
 
-  if (status === "in_use") {
-    return <Slot />;
-  }
-
-  return <Slot />;
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: "simple_push",
+      }}
+    />
+  );
 }

@@ -68,7 +68,7 @@ export type Database = {
           cart_id?: number | null
           change?: number
           created_at?: string
-          datetime: string
+          datetime?: string
           id?: string
           mode_of_payment?: string | null
           total_price?: number | null
@@ -176,18 +176,29 @@ export type Database = {
           cart_id: string
           id: number
           status: string
+          user_id: string | null
         }
         Insert: {
           cart_id?: string
           id?: number
           status: string
+          user_id?: string | null
         }
         Update: {
           cart_id?: string
           id?: number
           status?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "shopping_carts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shopping_list: {
         Row: {
