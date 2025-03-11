@@ -54,7 +54,7 @@ export default function LoginScreen() {
             className="text-3xl tracking-[1px] text-white"
             style={{ fontFamily: "GothamBold" }}
           >
-            ACTIVATE CARD WITH QR CODE
+            ACTIVATE CART WITH QR CODE
           </CardTitle>
         </CardHeader>
         <CardContent>
