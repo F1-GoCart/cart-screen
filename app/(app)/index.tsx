@@ -17,6 +17,7 @@ import { cart_id as current_cart } from "~/lib/constants";
 import AdminAuthorizationDialog from "~/components/admin-auth";
 import { useItemStore } from "~/stores/ItemsStore";
 import GoCartBanner from "~/assets/images/go_cart_logo.svg";
+import { Searchbar } from "react-native-paper";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
@@ -32,6 +33,7 @@ export default function Index() {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [isDialogVisible, setDialogVisible] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState("");
 
   const fetchItems = async () => {
     const cart_number = parseInt(current_cart.replace("go-cart-", ""));
@@ -187,8 +189,18 @@ export default function Index() {
 
   return (
     <View className="flex-1 pb-10 pl-5 pr-5 pt-10">
-      <View className="mb-2">
+      <View className="mb-2 flex-row justify-between">
         <GoCartBanner width={300} />
+        <Searchbar
+          placeholder="Search item"
+          style={{
+            width: 335,
+          }}
+          onChangeText={(text) => {
+            setSearchValue(text);
+          }}
+          value={searchValue}
+        />
       </View>
       <View className="flex flex-1 flex-row items-center justify-between gap-2">
         <Card className="mt-5 flex h-full w-full max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-14">
