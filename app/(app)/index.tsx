@@ -1,7 +1,14 @@
 import * as React from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
+} from "react-native";
 import Svg, { Path } from "react-native-svg";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
 import List from "../../components/cart-list";
 import SuggestedItemList from "../../components/carousel-suggested-list";
 import SaveUpItemList from "../../components/carousel-save-up-list";
@@ -10,7 +17,7 @@ import { saveUpItems } from "../../components/save-up-item-list";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { supabase } from "~/lib/supabase";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
 import { cart_id as current_cart } from "~/lib/constants";
@@ -20,6 +27,7 @@ import GoCartBanner from "~/assets/images/go_cart_logo.svg";
 import { Searchbar } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
@@ -29,6 +37,8 @@ export default function Index() {
   const setGlobalItems = useItemStore((state) => state.setScannedItems);
   const setGlobalTotalItems = useItemStore((state) => state.setTotalItems);
   const setGlobalTotalAmount = useItemStore((state) => state.setTotalAmount);
+  const searchRef = useRef<TextInput | null>(null);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -201,7 +211,7 @@ export default function Index() {
       const { data, error } = await supabase
         .from("product_details")
         .select()
-        .like("name", `%${searchValue}%`)
+        .ilike("name", `%${searchValue}%`)
         .order("name", { ascending: false });
 
       if (error) {
@@ -215,33 +225,79 @@ export default function Index() {
   if (status === "error") {
     toast.error(error.message);
   }
-  console.log(items);
 
   return (
-    <View className="flex-1 pb-10 pl-5 pr-5 pt-10">
-      <View className="mb-2 flex-row justify-between">
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      className="flex-1 pb-10 pl-5 pr-5 pt-10"
+    >
+      <View className="mb-2 mr-[26rem] flex-row justify-between">
         <GoCartBanner width={300} />
+        {/* <PaperButton
+          icon="cart-arrow-down"
+          style={{ width: 100, height: 50, justifyContent: "center" }}
+          labelStyle={{ fontSize: 18 }}
+        >
+          Items
+        </PaperButton> */}
         <Searchbar
           placeholder="Search item"
+          ref={searchRef}
           style={{
             width: 335,
           }}
+          onFocus={() => {
+            setIsSearchFocused(true);
+          }}
+          onBlur={() => {
+            setIsSearchFocused(false);
+          }}
           onChangeText={(text) => {
             setSearchValue(text);
+          }}
+          onClearIconPress={() => {
+            Keyboard.dismiss();
           }}
           value={searchValue}
         />
       </View>
       <View className="flex flex-1 flex-row items-center justify-between gap-2">
-        {searchValue ? (
-          <Card className="mt-5 flex h-full w-full max-w-4xl rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-14">
-            <Text className="text-4xl font-medium text-[#0fa958]">
-              Results for "{searchValue}"
+        {searchValue || isSearchFocused ? (
+          <View className="mt-5 flex h-full w-full max-w-4xl rounded-3xl border-0 bg-[#F4F4F4] pl-7 pr-7 pt-14">
+            <Text className="mb-6 text-4xl font-medium text-[#0fa958]">
+              {!searchValue
+                ? "All Items"
+                : `Results for "${searchValue}"` +
+                  (status === "success" ? ` (${items.length} results)` : "")}
             </Text>
-            <View>
-              {/*  */}
-            </View>
-          </Card>
+            <ScrollView contentContainerClassName="flex-row flex-wrap gap-5">
+              {status === "success" &&
+                items.map((item) => (
+                  <View
+                    key={item.id}
+                    className="h-64 w-64 items-center justify-center rounded-3xl bg-white"
+                  >
+                    <Image
+                      source={{
+                        uri: item.image,
+                      }}
+                      className="h-32 w-32"
+                    />
+                    <View className="mt-3 items-center gap-1">
+                      <Text className="text-center text-2xl font-medium">
+                        {item.name}
+                      </Text>
+                      <Text className="text-center text-[#939393]">
+                        Aisle {item.aisle} - {item.category}
+                      </Text>
+                      <Text className="text-center text-[#939393]">
+                        PHP {item.price}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+            </ScrollView>
+          </View>
         ) : (
           <Card className="mt-5 flex h-full w-full max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-14">
             <Card className="mt-5 h-full w-full rounded-3xl border-0 bg-[#E6E6E6]">
@@ -383,7 +439,7 @@ export default function Index() {
           itemId={selectedItemId}
         />
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
