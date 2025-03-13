@@ -127,7 +127,7 @@ export default function Index() {
           filter: "cart_id=eq." + cart_number,
         },
         (payload) => {
-          const { eventType, new: newItem } = payload;
+          const { eventType, new: newItem, old: oldItem } = payload;
 
           setScannedItems((prevItems) => {
             switch (eventType) {
@@ -152,6 +152,16 @@ export default function Index() {
                       );
                     }
                   });
+                }
+                return prevItems;
+              case "DELETE":
+                const deletedItem = prevItems.find(
+                  (item) => item.item_id === oldItem.item_id,
+                );
+                if (deletedItem) {
+                  return prevItems.filter(
+                    (item) => item.item_id !== oldItem.item_id,
+                  );
                 }
                 return prevItems;
 
