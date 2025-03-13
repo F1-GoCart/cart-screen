@@ -64,7 +64,7 @@ export default function SuggestedItem({
         resizeMode="contain"
       />
 
-      <Text style={styles.itemName}>
+      <Text style={styles.itemName} numberOfLines={2} ellipsizeMode="tail">
         {suggestedItem.itemName} {suggestedItem.itemSize}
       </Text>
       <Text style={styles.itemPrice}>
@@ -81,27 +81,19 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 10,
     borderWidth: 1,
+    height: 240,
     borderColor: "#C3E8D4",
     backgroundColor: "white",
     marginHorizontal: 10,
     width: 280,
   },
-  image: {
-    width: 90,
-    height: 130,
-    resizeMode: "contain",
-  },
+  image: { width: 90, height: 130, resizeMode: "contain" },
   itemName: {
     fontSize: 16,
     fontWeight: "bold",
-    maxWidth: 250,
+    maxWidth: 200,
     textAlign: "center",
-    marginTop: 10,
     marginBottom: 10,
   },
-  itemPrice: {
-    fontSize: 14,
-    color: "#333",
-    marginTop: 5,
-  },
+  itemPrice: { fontSize: 14, color: "#333", marginTop: 5 },
 });
