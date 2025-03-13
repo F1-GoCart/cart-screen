@@ -90,6 +90,7 @@ export default function Index() {
   };
 
   const fetchFullItem = async (item_id: number) => {
+    const cart_number = parseInt(current_cart.replace("go-cart-", ""));
     const { data, error } = await supabase
       .from("scanned_items")
       .select(
@@ -109,6 +110,7 @@ export default function Index() {
       `,
       )
       .eq("item_id", item_id)
+      .eq("cart_id", cart_number)
       .single();
 
     if (error) {
