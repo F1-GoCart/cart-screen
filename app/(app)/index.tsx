@@ -26,6 +26,7 @@ import { Searchbar } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { Audio } from "expo-av";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
@@ -126,8 +127,20 @@ export default function Index() {
           table: "scanned_items",
           filter: "cart_id=eq." + cart_number,
         },
-        (payload) => {
+        async (payload) => {
           const { eventType, new: newItem, old: oldItem } = payload;
+          const { sound: addSound } = await Audio.Sound.createAsync(
+            require("~/assets/sfx/add.mp3"),
+          );
+          const { sound: removeSound } = await Audio.Sound.createAsync(
+            require("~/assets/sfx/remove.mp3"),
+          );
+
+          if (eventType === "INSERT" || eventType === "UPDATE") {
+            await addSound.playAsync();
+          } else if (eventType === "DELETE") {
+            await removeSound.playAsync();
+          }
 
           setScannedItems((prevItems) => {
             switch (eventType) {

@@ -202,34 +202,27 @@ export type Database = {
       }
       shopping_list: {
         Row: {
+          checked: boolean | null
           created_at: string
           id: number
-          is_deleted: boolean | null
-          item_id: number | null
+          item_name: string | null
           user_id: string | null
         }
         Insert: {
+          checked?: boolean | null
           created_at?: string
           id?: number
-          is_deleted?: boolean | null
-          item_id?: number | null
+          item_name?: string | null
           user_id?: string | null
         }
         Update: {
+          checked?: boolean | null
           created_at?: string
           id?: number
-          is_deleted?: boolean | null
-          item_id?: number | null
+          item_name?: string | null
           user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "shopping_list_item_id_fkey"
-            columns: ["item_id"]
-            isOneToOne: false
-            referencedRelation: "product_details"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "shopping_list_user_id_fkey"
             columns: ["user_id"]
