@@ -4,6 +4,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
@@ -27,10 +28,13 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Audio } from "expo-av";
+import { ListCheck, CheckCircle, Circle } from "lucide-react-native";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };
+type ShoppingListItem = Database["public"]["Tables"]["shopping_list"]["Row"];
+type ShoppingCart = Database["public"]["Tables"]["shopping_carts"]["Row"];
 
 export default function Index() {
   const setGlobalItems = useItemStore((state) => state.setScannedItems);
@@ -44,6 +48,8 @@ export default function Index() {
   const [isDialogVisible, setDialogVisible] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState("");
+  const [tab, setTab] = useState<"notes" | "items">("items");
+  const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>([]);
 
   const fetchItems = async () => {
     const cart_number = parseInt(current_cart.replace("go-cart-", ""));
@@ -112,6 +118,44 @@ export default function Index() {
 
     return data as ScannedItem;
   };
+
+  const toggleItem = (id: number) => {
+    setShoppingList((prevList) =>
+      prevList.map((item) =>
+        item.id === id ? { ...item, checked: !item.checked } : item,
+      ),
+    );
+  };
+
+  useEffect(() => {
+    const fetchShoppingList = async () => {
+      const { data: cartData, error: cartError } = await supabase
+        .from("shopping_carts")
+        .select("user_id")
+        .eq("cart_id", "go-cart-01")
+        .single();
+
+      if (cartError || !cartData?.user_id) {
+        console.error("Error fetching cart user:", cartError);
+        return;
+      }
+
+      const userId = cartData.user_id;
+
+      const { data: listData, error: listError } = await supabase
+        .from("shopping_list")
+        .select("*")
+        .eq("user_id", userId);
+
+      if (listError) {
+        console.error("Error fetching shopping list:", listError);
+      } else {
+        setShoppingList(listData);
+      }
+    };
+
+    fetchShoppingList();
+  }, []);
 
   useEffect(() => {
     fetchItems();
@@ -251,7 +295,7 @@ export default function Index() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 pb-10 pl-5 pr-5 pt-10"
     >
-      <View className="mb-2 mr-[26rem] flex-row justify-between">
+      <View className="mb-2 flex-row justify-between">
         <GoCartBanner width={300} />
         <Searchbar
           placeholder="Search item"
@@ -272,6 +316,19 @@ export default function Index() {
           }}
           value={searchValue}
         />
+        <Button
+          className={`ml-16 flex-row items-center justify-between gap-x-2 rounded-lg ${tab === "notes" ? "bg-[#0FA958]" : "bg-white"} px-4 py-2`}
+          onPress={() => {
+            setTab((prevTab) => (prevTab === "items" ? "notes" : "items"));
+          }}
+        >
+          <Text
+            className={`font-semibold ${tab === "notes" ? "text-white" : "text-[#0FA958]"}`}
+          >
+            Shopping List
+          </Text>
+          <ListCheck color={tab === "notes" ? "white" : "#0FA958"} />
+        </Button>
       </View>
       <View className="flex flex-1 flex-row items-center justify-between gap-2">
         {searchValue || isSearchFocused ? (
@@ -405,43 +462,88 @@ export default function Index() {
           </Card>
         )}
 
-        <Card className="mt-5 flex h-full w-full max-w-sm items-center justify-center gap-3 rounded-3xl border-0 bg-[#E1FFEF] p-5">
-          <Card className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
-            <Text
-              style={{
-                fontWeight: 600,
-                color: "#005F42",
-                fontFamily: "GothamMedium",
-                textAlign: "center",
-                paddingTop: 25,
-                marginBottom: 10,
-              }}
-            >
-              ITEMS YOU MIGHT CONSIDER BUYING
-            </Text>
+        <Card
+          className={`mt-5 flex h-full w-full max-w-sm ${tab === "items" ? "items-center justify-center" : null} gap-3 rounded-3xl border-0 bg-[#E1FFEF] p-5`}
+        >
+          {tab === "items" ? (
+            <View>
+              <Card className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    color: "#005F42",
+                    fontFamily: "GothamMedium",
+                    textAlign: "center",
+                    paddingTop: 25,
+                    marginBottom: 10,
+                  }}
+                >
+                  ITEMS YOU MIGHT CONSIDER BUYING
+                </Text>
 
-            <SafeAreaView style={styles.container}>
-              <SuggestedItemList suggestedItemList={suggestedItems} />
-            </SafeAreaView>
-          </Card>
-          <Card className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
-            <Text
-              style={{
-                fontWeight: 600,
-                color: "#FF0000",
-                fontFamily: "GothamMedium",
-                textAlign: "center",
-                paddingTop: 25,
-                marginBottom: 10,
-              }}
-            >
-              SAVE UP!!!
-            </Text>
+                <SafeAreaView style={styles.container}>
+                  <SuggestedItemList suggestedItemList={suggestedItems} />
+                </SafeAreaView>
+              </Card>
+              <Card className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
+                <Text
+                  style={{
+                    fontWeight: 600,
+                    color: "#FF0000",
+                    fontFamily: "GothamMedium",
+                    textAlign: "center",
+                    paddingTop: 25,
+                    marginBottom: 10,
+                  }}
+                >
+                  SAVE UP!!!
+                </Text>
 
-            <SafeAreaView style={styles.container}>
-              <SaveUpItemList saveUpItemList={saveUpItems} />
-            </SafeAreaView>
-          </Card>
+                <SafeAreaView style={styles.container}>
+                  <SaveUpItemList saveUpItemList={saveUpItems} />
+                </SafeAreaView>
+              </Card>
+            </View>
+          ) : (
+            <View className="w-full">
+              <Text className="pb-3 text-center text-lg font-bold text-[#0FA958]">
+                Shopping List
+              </Text>
+
+              {shoppingList.map((item, index) => (
+                <View key={item.id}>
+                  <TouchableOpacity
+                    className="flex-row items-center justify-between p-2"
+                    onPress={() => toggleItem(item.id)}
+                  >
+                    {/* Item Name */}
+                    <Text
+                      className={`text-lg ${
+                        item.checked
+                          ? "text-gray-400 line-through"
+                          : "text-black"
+                      }`}
+                      style={
+                        item.checked ? { textDecorationStyle: "dashed" } : {}
+                      }
+                    >
+                      {item.item_name}
+                    </Text>
+
+                    {item.checked ? (
+                      <CheckCircle color="gray" size={24} />
+                    ) : (
+                      <Circle color="black" size={24} />
+                    )}
+                  </TouchableOpacity>
+
+                  {index !== shoppingList.length - 1 && (
+                    <View className="h-[1px] w-full bg-gray-300"></View>
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
         </Card>
       </View>
       {isDialogVisible && (
