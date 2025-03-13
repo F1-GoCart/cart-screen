@@ -550,6 +550,7 @@ export default function Index() {
           visible={isDialogVisible}
           onClose={() => setDialogVisible(false)}
           itemId={selectedItemId}
+          setScannedItems={setScannedItems}
         />
       )}
     </KeyboardAvoidingView>

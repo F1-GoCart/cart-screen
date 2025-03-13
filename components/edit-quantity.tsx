@@ -4,18 +4,25 @@ import { Button } from "~/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
 import { Text } from "~/components/ui/text";
+import { Database } from "~/lib/database.types";
+import { supabase } from "~/lib/supabase";
+
+type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
+  product_details: Database["public"]["Tables"]["product_details"]["Row"];
+};
 
 type EditQuantityDialogProps = {
   visible: boolean;
   currentQuantity: number;
   onClose: () => void;
   onConfirm: (newQuantity: number) => void;
+  itemId: string | null;
+  setScannedItems: React.Dispatch<React.SetStateAction<ScannedItem[]>>;
 };
 
 const EditQuantityDialog: React.FC<EditQuantityDialogProps> = ({
@@ -23,6 +30,8 @@ const EditQuantityDialog: React.FC<EditQuantityDialogProps> = ({
   currentQuantity,
   onClose,
   onConfirm,
+  itemId,
+  setScannedItems,
 }) => {
   const [quantity, setQuantity] = React.useState(currentQuantity.toString());
 
@@ -32,10 +41,31 @@ const EditQuantityDialog: React.FC<EditQuantityDialogProps> = ({
     }
   }, [visible, currentQuantity]);
 
+  const handleQuantityUpdate = async (item_id: number, newQuantity: number) => {
+    if (newQuantity < 0) return;
+
+    const { error } = await supabase
+      .from("scanned_items")
+      .update({ quantity: newQuantity })
+      .eq("item_id", item_id);
+
+    if (error) {
+      console.error("Error updating quantity:", error);
+      return;
+    }
+
+    setScannedItems((prevItems) =>
+      prevItems.map((item) =>
+        item.item_id === item_id ? { ...item, quantity: newQuantity } : item,
+      ),
+    );
+  };
+
   const handleConfirm = () => {
     const newQuantity = Number(quantity);
     if (!isNaN(newQuantity) && newQuantity >= 0) {
       onConfirm(newQuantity);
+      handleQuantityUpdate(Number(itemId), newQuantity);
     } else {
       alert("Please enter a valid quantity.");
     }
