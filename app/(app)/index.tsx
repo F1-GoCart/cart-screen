@@ -1,11 +1,9 @@
-import * as React from "react";
 import {
   View,
   Text,
   Image,
   KeyboardAvoidingView,
   Platform,
-  TextInput,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { SafeAreaView, StyleSheet, Keyboard } from "react-native";
@@ -17,7 +15,7 @@ import { saveUpItems } from "../../components/save-up-item-list";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { supabase } from "~/lib/supabase";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
 import { cart_id as current_cart } from "~/lib/constants";
@@ -37,7 +35,6 @@ export default function Index() {
   const setGlobalItems = useItemStore((state) => state.setScannedItems);
   const setGlobalTotalItems = useItemStore((state) => state.setTotalItems);
   const setGlobalTotalAmount = useItemStore((state) => state.setTotalAmount);
-  const searchRef = useRef<TextInput | null>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const [scannedItems, setScannedItems] = useState<ScannedItem[]>([]);
@@ -233,16 +230,8 @@ export default function Index() {
     >
       <View className="mb-2 mr-[26rem] flex-row justify-between">
         <GoCartBanner width={300} />
-        {/* <PaperButton
-          icon="cart-arrow-down"
-          style={{ width: 100, height: 50, justifyContent: "center" }}
-          labelStyle={{ fontSize: 18 }}
-        >
-          Items
-        </PaperButton> */}
         <Searchbar
           placeholder="Search item"
-          ref={searchRef}
           style={{
             width: 335,
           }}
