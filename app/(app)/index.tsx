@@ -180,9 +180,12 @@ export default function Index() {
             require("~/assets/sfx/remove.mp3"),
           );
 
-          if (eventType === "INSERT" || eventType === "UPDATE") {
+          if (
+            eventType === "INSERT" ||
+            (eventType === "UPDATE" && newItem.quantity > oldItem.quantity)
+          ) {
             await addSound.playAsync();
-          } else if (eventType === "DELETE") {
+          } else {
             await removeSound.playAsync();
           }
 
