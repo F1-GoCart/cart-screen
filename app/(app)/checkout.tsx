@@ -24,13 +24,8 @@ export default function Checkout() {
   return (
     <View className="flex-1 pb-10 pl-5 pr-5 pt-10">
       <View className="mb-2 max-h-20 flex-row">
-        <GoCartBanner width={300} />
-        <View
-          style={{
-            flex: 1,
-            alignItems: "flex-end",
-          }}
-        >
+        <GoCartBanner width={300} height={50} />
+        <View style={{ flex: 1, alignItems: "flex-end" }}>
           <Text
             style={{
               fontWeight: 700,
@@ -122,7 +117,7 @@ export default function Checkout() {
         </View>
       </View>
 
-      <View className="flex flex-1 flex-row justify-between gap-2">
+      <View className="mb-2 flex flex-1 flex-row justify-between gap-2">
         <Card className="mt-5 flex h-full w-full max-w-4xl justify-center rounded-3xl border-0 bg-[#F4F4F4] pb-12 pl-7 pr-7 pt-11">
           <Card className="mt-7 h-full w-full rounded-3xl border-0 bg-[#E6E6E6]">
             <SafeAreaView style={styles.container}>
@@ -145,7 +140,7 @@ export default function Checkout() {
           </View>
         </Card>
         <View className="ml-4 flex-col gap-3">
-          <Card className="mt-5 flex h-32 w-full max-w-sm gap-3 rounded-3xl border-0 bg-[#F4F4F4] p-5">
+          <Card className="h-15 mt-5 flex w-full max-w-sm gap-3 rounded-2xl border-0 bg-[#F4F4F4] p-5">
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text
                 style={{
@@ -171,7 +166,7 @@ export default function Checkout() {
               </Text>
             </View>
           </Card>
-          <Card className="mt-1 flex h-4/6 w-full max-w-sm items-center justify-center gap-3 rounded-3xl border-0 bg-[#E1FFEF] p-5">
+          <Card className="mt-1 flex h-[77%] w-full max-w-sm items-center justify-center gap-3 rounded-3xl border-0 bg-[#E1FFEF] p-5">
             <Text
               style={{
                 fontWeight: 700,
@@ -186,14 +181,10 @@ export default function Checkout() {
 
             <Image
               source={require("../../assets/images/payment_methods.png")}
-              style={{
-                width: "80%",
-                height: 50,
-                resizeMode: "contain",
-              }}
+              style={{ width: "80%", height: 50, resizeMode: "contain" }}
             />
 
-            <Svg width="178" height="178" viewBox="0 0 128 128" fill="none">
+            <Svg width="248" height="248" viewBox="0 0 128 128" fill="none">
               <G ClipPath="url(#clip0_266_1170)">
                 <Path
                   d="M117.333 12.4446H26.6667C23.8377 12.4446 19.7782 12.6664 17.7778 14.6668C15.7774 16.6672 16 20.2823 16 23.1112V44.4446H22.2222V17.3335H122.222L122.667 103.111H22.2222V76.4446H16V97.7779C16 100.607 15.7774 104.666 17.7778 106.667C19.7782 108.667 23.8377 108.445 26.6667 108.445H117.333C120.162 108.445 124.222 108.667 126.222 106.667C128.223 104.666 128 100.607 128 97.7779V23.1112C128 20.2823 128.223 16.6672 126.222 14.6668C124.222 12.6664 120.162 12.4446 117.333 12.4446ZM37.3333 76.4446V62.2356H0V55.1112H37.3333V44.4446L58.6667 60.4446L37.3333 76.4446ZM106.667 61.3467H69.3333V55.1112H106.667V61.3467ZM106.667 40.0001H69.3333V33.7779H106.667V40.0001ZM90.6667 81.7912H69.3333V76.4446H90.6667V81.7912Z"
@@ -259,9 +250,4 @@ export default function Checkout() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-  },
-});
+const styles = StyleSheet.create({ container: { flex: 1, paddingTop: 20 } });

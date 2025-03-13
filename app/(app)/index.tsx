@@ -251,13 +251,11 @@ export default function Index() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 pb-10 pl-5 pr-5 pt-10"
     >
-      <View className="mb-2 mr-[26rem] flex-row justify-between">
-        <GoCartBanner width={300} />
+      <View className="mb-5 mr-[26rem] flex-row justify-between">
+        <GoCartBanner width={300} height={50} />
         <Searchbar
           placeholder="Search item"
-          style={{
-            width: 335,
-          }}
+          style={{ width: 335, height: 46 }}
           onFocus={() => {
             setIsSearchFocused(true);
           }}
@@ -273,10 +271,13 @@ export default function Index() {
           value={searchValue}
         />
       </View>
-      <View className="flex flex-1 flex-row items-center justify-between gap-2">
+      <View className="mb-9 flex flex-1 flex-row items-center justify-between gap-2">
         {searchValue || isSearchFocused ? (
-          <View className="mt-5 flex h-full w-full max-w-4xl rounded-3xl border-0 bg-[#F4F4F4] pl-7 pr-7 pt-14">
-            <Text className="mb-6 text-4xl font-medium text-[#0fa958]">
+          <View className="mt-5 flex h-full w-full max-w-4xl rounded-3xl border-0 bg-[#F4F4F4] pl-7 pr-7 pt-10">
+            <Text
+              className="mb-6 text-3xl font-medium text-[#0fa958]"
+              style={{ fontFamily: "GothamMedium" }}
+            >
               {!searchValue
                 ? "All Items"
                 : `Results for "${searchValue}"` +
@@ -287,23 +288,21 @@ export default function Index() {
                 items.map((item) => (
                   <View
                     key={item.id}
-                    className="h-64 w-64 items-center justify-center rounded-3xl bg-white"
+                    className="h-64 w-64 items-center justify-center rounded-2xl bg-white"
                   >
-                    <Image
-                      source={{
-                        uri: item.image,
-                      }}
-                      className="h-32 w-32"
-                    />
+                    <Image source={{ uri: item.image }} className="h-24 w-24" />
                     <View className="mt-3 items-center gap-1">
-                      <Text className="text-center text-2xl font-medium">
+                      <Text className="max-w-[200] text-center text-xl font-medium">
                         {item.name}
                       </Text>
-                      <Text className="text-center text-[#939393]">
+                      <Text className="mt-3 text-center text-[#939393]">
                         Aisle {item.aisle} - {item.category}
                       </Text>
-                      <Text className="text-center text-[#939393]">
-                        PHP {item.price}
+                      <Text
+                        className="mt-2 text-center text-[#939393]"
+                        style={{ fontSize: 13 }}
+                      >
+                        Php. {item.price}
                       </Text>
                     </View>
                   </View>
@@ -455,9 +454,4 @@ export default function Index() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-  },
-});
+const styles = StyleSheet.create({ container: { flex: 1, paddingTop: 20 } });
