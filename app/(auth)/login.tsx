@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { supabase } from "~/lib/supabase";
 import { Text } from "~/components/ui/text";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import QRCode from "react-native-qrcode-svg";
 
 import {

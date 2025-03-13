@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { supabase } from "~/lib/supabase";
 import useStatusStore from "~/stores/StatusStore";
 import { ShoppingCart } from "~/lib/interfaces";
-import { Href, Redirect, Slot, Stack } from "expo-router";
+import { Href, Redirect, Stack } from "expo-router";
 import { cart_id } from "~/lib/constants";
 
 export default function AppLayout() {

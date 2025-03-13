@@ -5,8 +5,6 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import List from "../../components/cart-list";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { supabase } from "~/lib/supabase";
-import { useEffect, useState } from "react";
 import { Database } from "~/lib/database.types";
 import { router } from "expo-router";
 import { useItemStore } from "~/stores/ItemsStore";
