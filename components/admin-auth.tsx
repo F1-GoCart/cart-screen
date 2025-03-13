@@ -11,17 +11,24 @@ import {
 } from "~/components/ui/dialog";
 import { Text } from "~/components/ui/text";
 import EditQuantityDialog from "./edit-quantity";
+import { Database } from "~/lib/database.types";
 
 type AdminAuthorizationDialogProps = {
   visible: boolean;
   itemId: string | null;
   onClose: () => void;
+  setScannedItems: React.Dispatch<React.SetStateAction<ScannedItem[]>>;
+};
+
+type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
+  product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };
 
 const AdminAuthorizationDialog: React.FC<AdminAuthorizationDialogProps> = ({
   visible,
   itemId,
   onClose,
+  setScannedItems,
 }) => {
   const [isAccessGranted, setIsAccessGranted] = React.useState(false);
 
@@ -65,6 +72,7 @@ const AdminAuthorizationDialog: React.FC<AdminAuthorizationDialogProps> = ({
       </Dialog>
       <EditQuantityDialog
         visible={isAccessGranted}
+        itemId={itemId}
         currentQuantity={1}
         onClose={() => {
           setIsAccessGranted(false);
@@ -75,6 +83,7 @@ const AdminAuthorizationDialog: React.FC<AdminAuthorizationDialogProps> = ({
           setIsAccessGranted(false);
           onClose();
         }}
+        setScannedItems={setScannedItems}
       />
     </>
   );
