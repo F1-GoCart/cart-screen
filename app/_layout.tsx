@@ -21,6 +21,8 @@ import { setStatusBarHidden } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import { Toaster } from "sonner-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Material3ThemeProvider } from "~/lib/Material3ThemeProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -39,6 +41,8 @@ NavigationBar.setVisibilityAsync("hidden");
 NavigationBar.setBehaviorAsync("inset-swipe");
 setStatusBarHidden(true, "none");
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const hasMounted = useRef(false);
@@ -73,16 +77,20 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <GestureHandlerRootView>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: "fade_from_bottom",
-          }}
-        />
-        <Toaster />
-        <PortalHost />
-      </GestureHandlerRootView>
+      <Material3ThemeProvider sourceColor="#0fa958">
+        <GestureHandlerRootView>
+          <QueryClientProvider client={queryClient}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                animation: "fade_from_bottom",
+              }}
+            />
+            <Toaster />
+            <PortalHost />
+          </QueryClientProvider>
+        </GestureHandlerRootView>
+      </Material3ThemeProvider>
     </ThemeProvider>
   );
 }
