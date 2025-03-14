@@ -28,13 +28,15 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Audio } from "expo-av";
-import { ListCheck, CheckCircle, Circle } from "lucide-react-native";
+import { ListCheck, CheckCircle, Circle, LogOut } from "lucide-react-native";
+import { cart_id } from "~/lib/constants";
+import { center } from "@shopify/react-native-skia";
+import EndSessionModal from "~/components/end-session";
 
 type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };
 type ShoppingListItem = Database["public"]["Tables"]["shopping_list"]["Row"];
-type ShoppingCart = Database["public"]["Tables"]["shopping_carts"]["Row"];
 
 export default function Index() {
   const setGlobalItems = useItemStore((state) => state.setScannedItems);
@@ -50,6 +52,8 @@ export default function Index() {
   const [searchValue, setSearchValue] = useState("");
   const [tab, setTab] = useState<"notes" | "items">("items");
   const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>([]);
+
+  const [isLogoutModal, setIsLogout] = useState<boolean>(false);
 
   const fetchItems = async () => {
     const cart_number = parseInt(current_cart.replace("go-cart-", ""));
@@ -129,12 +133,27 @@ export default function Index() {
     );
   };
 
+  const toggleCancel = () => {
+    setIsLogout(false);
+  };
+
+  const endSession = async () => {
+    const { error } = await supabase
+      .from("shopping_carts")
+      .update({ status: "not_in_use", user_id: null })
+      .eq("cart_id", cart_id);
+
+    if (error) {
+      console.error("Error updating status: ", error.message);
+    }
+  };
+
   useEffect(() => {
     const fetchShoppingList = async () => {
       const { data: cartData, error: cartError } = await supabase
         .from("shopping_carts")
         .select("user_id")
-        .eq("cart_id", "go-cart-01")
+        .eq("cart_id", cart_id)
         .single();
 
       if (cartError || !cartData?.user_id) {
@@ -272,8 +291,6 @@ export default function Index() {
     data: items,
     status,
     error,
-    isRefetching,
-    refetch,
   } = useQuery({
     queryKey: ["items", searchValue],
     queryFn: async () => {
@@ -320,7 +337,15 @@ export default function Index() {
           value={searchValue}
         />
         <Button
-          className={`ml-16 flex-row items-center justify-between gap-x-2 rounded-lg ${tab === "notes" ? "bg-[#0FA958]" : "bg-white"} px-4 py-2`}
+          className={`flex-row items-center justify-between rounded-3xl bg-[#0FA958] px-4 py-2`}
+          onPress={() => {
+            setIsLogout(true);
+          }}
+        >
+          <Text className={`font-semibold text-white`}>DEACTIVATE</Text>
+        </Button>
+        <Button
+          className={`flex-row items-center justify-between gap-x-2 rounded-lg ${tab === "notes" ? "bg-[#0FA958]" : "bg-white"}`}
           onPress={() => {
             setTab((prevTab) => (prevTab === "items" ? "notes" : "items"));
           }}
@@ -556,6 +581,13 @@ export default function Index() {
           onClose={() => setDialogVisible(false)}
           itemId={selectedItemId}
           setScannedItems={setScannedItems}
+        />
+      )}
+      {isLogoutModal && (
+        <EndSessionModal
+          visible={isLogoutModal}
+          onCancel={toggleCancel}
+          onDeactivate={endSession}
         />
       )}
     </KeyboardAvoidingView>
