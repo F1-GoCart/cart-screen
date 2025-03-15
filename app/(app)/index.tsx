@@ -313,10 +313,7 @@ export default function Index() {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      className="flex-1 pb-10 pl-5 pr-5 pt-10"
-    >
+    <KeyboardAvoidingView className="flex-1 pb-10 pl-5 pr-5 pt-10">
       <View className="mb-2 flex-row justify-between">
         <GoCartBanner width={300} height={50} />
         <Searchbar
@@ -337,7 +334,7 @@ export default function Index() {
           value={searchValue}
         />
         <Button
-          className={`flex-row items-center justify-between rounded-3xl bg-[#0FA958] px-4 py-2`}
+          className={`ml-20 flex-row rounded-3xl bg-[#0FA958] px-4 py-4`}
           onPress={() => {
             setIsLogout(true);
           }}
@@ -492,11 +489,12 @@ export default function Index() {
         )}
 
         <Card
-          className={`mt-5 flex h-full w-full max-w-sm ${tab === "items" ? "items-center justify-center" : null} gap-3 rounded-3xl border-0 bg-[#E1FFEF] p-5`}
+          className={`mt-5 flex w-full max-w-sm p-4 pb-10 ${tab === "items" ? "items-center justify-center" : ""} rounded-3xl border-0 bg-[#E1FFEF]`}
         >
           {tab === "items" ? (
-            <View>
-              <Card className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
+            <View className="align-horizontal center mt-3 w-full gap-3">
+              {/* Suggested Items Card */}
+              <Card className="flex h-3/6 w-full max-w-sm items-center justify-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
                 <Text
                   style={{
                     fontWeight: 600,
@@ -514,7 +512,7 @@ export default function Index() {
                   <SuggestedItemList suggestedItemList={suggestedItems} />
                 </SafeAreaView>
               </Card>
-              <Card className="flex h-3/6 w-full max-w-sm items-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
+              <Card className="flex h-3/6 w-full max-w-sm items-center justify-center rounded-3xl border-0 bg-[#f9fcfb] pb-5">
                 <Text
                   style={{
                     fontWeight: 600,

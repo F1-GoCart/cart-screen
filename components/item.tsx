@@ -6,11 +6,7 @@ type ScannedItem = Database["public"]["Tables"]["scanned_items"]["Row"] & {
   product_details: Database["public"]["Tables"]["product_details"]["Row"];
 };
 
-type Props = {
-  index: number;
-  scannedItem: ScannedItem;
-  showImage: boolean;
-};
+type Props = { index: number; scannedItem: ScannedItem; showImage: boolean };
 
 export default function Item({ scannedItem, showImage }: Props) {
   if (scannedItem && scannedItem.quantity && scannedItem.quantity > 0) {
@@ -37,7 +33,7 @@ export default function Item({ scannedItem, showImage }: Props) {
             {scannedItem.product_details.name}{" "}
             {scannedItem.product_details.size}
           </Text>
-          <Text style={styles.itemQuantity}>{scannedItem.quantity}</Text>
+          <Text style={styles.itemQuantity}>x {scannedItem.quantity}</Text>
         </View>
         <Text style={styles.itemPrice}>
           {/* ₱{scannedItem.product_details.price} */}₱
@@ -58,16 +54,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  detailsContainer: {
-    flex: 1,
-    marginHorizontal: 10,
-  },
+  image: { width: 50, height: 50, borderRadius: 5, marginRight: 10 },
+  detailsContainer: { flex: 1, marginHorizontal: 10 },
   itemName: {
     fontSize: 16,
     fontWeight: "bold",

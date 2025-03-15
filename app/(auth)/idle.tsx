@@ -45,7 +45,7 @@ export default function IdleScreen() {
             fontWeight: "700",
             color: "#0FA958",
             fontFamily: "GothamMedium",
-            fontSize: 18,
+            fontSize: 16,
             textAlign: "center",
           }}
         >
